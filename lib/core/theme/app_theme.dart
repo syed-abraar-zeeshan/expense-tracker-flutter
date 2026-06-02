@@ -20,7 +20,7 @@ class AppTheme {
       colorScheme: const ColorScheme.light(
         primary: AppColors.primary,
         secondary: AppColors.success,
-        error: AppColors.danger,
+        error: AppColors.error,
         surface: AppColors.lightSurface,
       ),
       textTheme:
@@ -72,7 +72,7 @@ class AppTheme {
       colorScheme: const ColorScheme.dark(
         primary: AppColors.primary,
         secondary: AppColors.success,
-        error: AppColors.danger,
+        error: AppColors.error,
         surface: AppColors.darkSurface,
       ),
       textTheme:
@@ -134,11 +134,15 @@ class AppTheme {
     ),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
-      borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+      borderSide: const BorderSide(color: AppColors.primary, width: 2),
     ),
     errorBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
-      borderSide: const BorderSide(color: AppColors.danger, width: 1),
+      borderSide: const BorderSide(color: AppColors.error, width: 1.5),
+    ),
+    focusedErrorBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: const BorderSide(color: AppColors.error, width: 2),
     ),
   );
 

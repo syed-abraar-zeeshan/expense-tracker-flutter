@@ -1,9 +1,12 @@
+import 'package:expense_flow/core/network/dio_client.dart';
 import 'package:expense_flow/core/theme/app_theme.dart';
+import 'package:expense_flow/core/network/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  DioClient.instance.init();
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -12,20 +15,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Expense Flow',
       debugShowCheckedModeBanner: false,
-
-      // Inject our verified structural configurations
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-
-      // This tells Flutter to read the native OS configuration (Light or Dark)
       themeMode: ThemeMode.system,
-
-      home: const Scaffold(
-        body: Center(child: Text('Design Token System Active')),
-      ),
+      routerConfig: appRouter,
     );
   }
 }

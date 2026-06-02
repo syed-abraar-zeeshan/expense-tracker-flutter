@@ -15,7 +15,7 @@ class AppColors {
   static const Color success = Color(
     0xFF10B981,
   ); // Emerald Green (Income / Positive Cashflow)
-  static const Color danger = Color(
+  static const Color error = Color(
     0xFFEF4444,
   ); // Coral Red (Expenses / Outflow / Alerts)
   static const Color warning = Color(
