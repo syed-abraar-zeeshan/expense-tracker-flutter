@@ -6,6 +6,8 @@ part 'auth_state.freezed.dart';
 abstract class AuthState with _$AuthState {
   const factory AuthState({
     @Default(false) bool isLoading,
+    @Default(false) bool isAuthenticated,
+    @Default(false) bool isRegistered,
     String? errorMessage,
   }) = _AuthState;
 }

@@ -42,7 +42,7 @@ final class PasswordVisibilityProvider
 }
 
 String _$passwordVisibilityHash() =>
-    r'b35de6a02a3dbb86e92b6d4cbcfb2e0393b3804b';
+    r'6ad2122ff2b5cd39d5b368940b55b83dea148d2b';
 
 abstract class _$PasswordVisibility extends $Notifier<bool> {
   bool build();
@@ -95,7 +95,7 @@ final class ConfirmPasswordVisibilityProvider
 }
 
 String _$confirmPasswordVisibilityHash() =>
-    r'0cf4f392594120766adb43e3276c2ca88d7d2ab1';
+    r'8faaf72f602d82a780837454320fb4b1cf81c144';
 
 abstract class _$ConfirmPasswordVisibility extends $Notifier<bool> {
   bool build();
