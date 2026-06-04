@@ -4,11 +4,13 @@ import 'package:expense_flow/core/utils/app_validators.dart';
 import 'package:expense_flow/core/widgets/app_button.dart';
 import 'package:expense_flow/core/widgets/app_text_field.dart';
 import 'package:expense_flow/features/auth/presentation/forms/register_form_controller.dart';
+import 'package:expense_flow/features/auth/presentation/providers/register_provider.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends ConsumerWidget {
   RegisterScreen({super.key});
 
   final formController = RegisterFormController();
@@ -20,7 +22,12 @@ class RegisterScreen extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isPasswordHidden = ref.watch(passwordVisibilityProvider);
+    final isConfirmPasswordHidden = ref.watch(
+      confirmPasswordVisibilityProvider,
+    );
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -61,7 +68,17 @@ class RegisterScreen extends StatelessWidget {
                   labelText: AppStrings.password,
                   hintText: AppStrings.enterPassword,
                   validator: AppValidators.password,
-                  obscureText: true,
+                  obscureText: isPasswordHidden,
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      ref.read(passwordVisibilityProvider.notifier).toggle();
+                    },
+                    icon: Icon(
+                      isPasswordHidden
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                    ),
+                  ),
                 ),
                 const SizedBox(height: AppDimensions.md),
                 AppTextField(
@@ -74,7 +91,19 @@ class RegisterScreen extends StatelessWidget {
                       formController.passwordController.text,
                     );
                   },
-                  obscureText: true,
+                  obscureText: isConfirmPasswordHidden,
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      ref
+                          .read(confirmPasswordVisibilityProvider.notifier)
+                          .toggle();
+                    },
+                    icon: Icon(
+                      isConfirmPasswordHidden
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                    ),
+                  ),
                 ),
                 const SizedBox(height: AppDimensions.xl),
                 AppButton(text: AppStrings.register, onPressed: _register),
