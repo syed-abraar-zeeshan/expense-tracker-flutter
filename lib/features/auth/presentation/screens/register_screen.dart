@@ -2,7 +2,9 @@ import 'package:expense_flow/core/constants/app_strings.dart';
 import 'package:expense_flow/core/theme/app_dimensions.dart';
 import 'package:expense_flow/core/utils/app_validators.dart';
 import 'package:expense_flow/core/widgets/app_button.dart';
+import 'package:expense_flow/core/widgets/app_snackbar.dart';
 import 'package:expense_flow/core/widgets/app_text_field.dart';
+import 'package:expense_flow/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:expense_flow/features/auth/presentation/forms/register_form_controller.dart';
 import 'package:expense_flow/features/auth/presentation/providers/register_provider.dart';
 import 'package:flutter/gestures.dart';
@@ -13,13 +15,7 @@ import 'package:go_router/go_router.dart';
 class RegisterScreen extends ConsumerWidget {
   RegisterScreen({super.key});
 
-  final formController = RegisterFormController();
-
-  void _register() {
-    if (formController.validate()) {
-      debugPrint('Register Clicked');
-    }
-  }
+  final registerFormController = RegisterFormController();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -28,12 +24,32 @@ class RegisterScreen extends ConsumerWidget {
       confirmPasswordVisibilityProvider,
     );
 
+    ref.listen(authControllerProvider, (previous, next) {
+      if (next.errorMessage != null) {
+        AppSnackbar.show(
+          context,
+          message: next.errorMessage!,
+          type: SnackbarType.error,
+        );
+        ref.read(authControllerProvider.notifier).clearError();
+      }
+      if (next.isRegistered) {
+        AppSnackbar.show(
+          context,
+          message: 'Registration successful',
+          type: SnackbarType.success,
+        );
+
+        context.pop(); // back to login
+      }
+    });
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppDimensions.lg),
           child: Form(
-            key: formController.formKey,
+            key: registerFormController.formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -49,14 +65,14 @@ class RegisterScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: AppDimensions.xl),
                 AppTextField(
-                  controller: formController.nameController,
+                  controller: registerFormController.nameController,
                   labelText: AppStrings.fullName,
                   hintText: AppStrings.enterName,
                   validator: AppValidators.required,
                 ),
                 const SizedBox(height: AppDimensions.md),
                 AppTextField(
-                  controller: formController.emailController,
+                  controller: registerFormController.emailController,
                   labelText: AppStrings.email,
                   hintText: AppStrings.enterEmail,
                   keyboardType: TextInputType.emailAddress,
@@ -64,7 +80,7 @@ class RegisterScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: AppDimensions.md),
                 AppTextField(
-                  controller: formController.passwordController,
+                  controller: registerFormController.passwordController,
                   labelText: AppStrings.password,
                   hintText: AppStrings.enterPassword,
                   validator: AppValidators.password,
@@ -82,13 +98,13 @@ class RegisterScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: AppDimensions.md),
                 AppTextField(
-                  controller: formController.confirmPasswordController,
+                  controller: registerFormController.confirmPasswordController,
                   labelText: AppStrings.confirmPassword,
                   hintText: AppStrings.confirmPassword,
                   validator: (value) {
                     return AppValidators.confirmPassword(
                       value,
-                      formController.passwordController.text,
+                      registerFormController.passwordController.text,
                     );
                   },
                   obscureText: isConfirmPasswordHidden,
@@ -106,7 +122,25 @@ class RegisterScreen extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: AppDimensions.xl),
-                AppButton(text: AppStrings.register, onPressed: _register),
+                AppButton(
+                  text: AppStrings.register,
+                  onPressed: () {
+                    if (registerFormController.validate()) {
+                      ref
+                          .read(authControllerProvider.notifier)
+                          .register(
+                            name: registerFormController.nameController.text
+                                .trim(),
+                            email: registerFormController.emailController.text
+                                .trim(),
+                            password: registerFormController
+                                .confirmPasswordController
+                                .text
+                                .trim(),
+                          );
+                    }
+                  },
+                ),
                 const SizedBox(height: AppDimensions.lg),
                 Center(
                   child: RichText(

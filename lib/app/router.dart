@@ -1,5 +1,6 @@
 import 'package:expense_flow/features/auth/presentation/screens/login_screen.dart';
 import 'package:expense_flow/features/auth/presentation/screens/register_screen.dart';
+import 'package:expense_flow/features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'package:go_router/go_router.dart';
 
 final appRouter = GoRouter(
@@ -7,5 +8,9 @@ final appRouter = GoRouter(
   routes: [
     GoRoute(path: '/', builder: (context, state) => LoginScreen()),
     GoRoute(path: '/register', builder: (context, state) => RegisterScreen()),
+    GoRoute(
+      path: '/dashboard',
+      builder: (context, state) => const DashboardScreen(),
+    ),
   ],
 );

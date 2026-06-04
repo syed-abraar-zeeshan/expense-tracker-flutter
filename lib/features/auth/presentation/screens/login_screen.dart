@@ -2,7 +2,9 @@ import 'package:expense_flow/core/constants/app_strings.dart';
 import 'package:expense_flow/core/theme/app_dimensions.dart';
 import 'package:expense_flow/core/utils/app_validators.dart';
 import 'package:expense_flow/core/widgets/app_button.dart';
+import 'package:expense_flow/core/widgets/app_snackbar.dart';
 import 'package:expense_flow/core/widgets/app_text_field.dart';
+import 'package:expense_flow/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:expense_flow/features/auth/presentation/forms/login_form_controller.dart';
 import 'package:expense_flow/features/auth/presentation/providers/login_provider.dart';
 import 'package:flutter/gestures.dart';
@@ -10,20 +12,52 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class LoginScreen extends ConsumerWidget {
-  LoginScreen({super.key});
+class LoginScreen extends ConsumerStatefulWidget {
+  const LoginScreen({super.key});
 
-  final loginFormController = LoginFormController();
+  @override
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
+}
 
-  void _login() {
-    if (loginFormController.validate()) {
-      debugPrint('Login Clicked');
-    }
+class _LoginScreenState extends ConsumerState<LoginScreen> {
+  late final LoginFormController loginFormController;
+
+  @override
+  void initState() {
+    super.initState();
+    loginFormController = LoginFormController();
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void dispose() {
+    loginFormController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final isPasswordHidden = ref.watch(passwordVisibilityProvider);
+    final authState = ref.watch(authControllerProvider);
+
+    ref.listen(authControllerProvider, (previous, next) {
+      if (next.errorMessage != null) {
+        AppSnackbar.show(
+          context,
+          message: next.errorMessage!,
+          type: SnackbarType.error,
+        );
+        ref.read(authControllerProvider.notifier).clearError();
+      }
+      if (next.isAuthenticated) {
+        AppSnackbar.show(
+          context,
+          message: 'Login successful',
+          type: SnackbarType.success,
+        );
+        context.go('/dashboard');
+      }
+    });
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -69,7 +103,7 @@ class LoginScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: AppDimensions.radiusMd),
+                const SizedBox(height: AppDimensions.md),
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
@@ -78,7 +112,24 @@ class LoginScreen extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: AppDimensions.md),
-                AppButton(text: AppStrings.login, onPressed: _login),
+                AppButton(
+                  text: AppStrings.login,
+                  isLoading: authState.isLoading,
+                  onPressed: () {
+                    if (loginFormController.validate()) {
+                      ref
+                          .read(authControllerProvider.notifier)
+                          .login(
+                            email: loginFormController.emailController.text
+                                .trim(),
+                            password: loginFormController
+                                .passwordController
+                                .text
+                                .trim(),
+                          );
+                    }
+                  },
+                ),
                 const SizedBox(height: AppDimensions.lg),
                 Center(
                   child: RichText(
