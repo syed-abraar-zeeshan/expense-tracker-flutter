@@ -27,6 +27,26 @@ class AppColors {
   static const darkTextPrimary = Color(0xFFF8FAFC);
   static const darkTextSecondary = Color(0xFFCBD5E1);
 
+  // Dashboard Specific Colors
+  static const dashboardBackground = Color(0xFFFBFBFF);
+  static const avatarBackground = Color(0xFFE0E0FF);
+  
+  // Balance Card
+  static const balanceGradientStart = Color(0xFF7B7DF8);
+  static const balanceGradientEnd = Color(0xFF6366F1);
+  
+  // Summary Cards
+  static const incomeCardBg = Color(0xFFE8F5E9);
+  static const expenseCardBg = Color(0xFFFFF1F0);
+  
+  // Transaction Count
+  static const transactionCountBg = Color(0xFFFFF7E6);
+  static const transactionIconOrange = Color(0xFFFF9800);
+  
+  // Transaction Tiles
+  static const incomePillBg = Color(0xFFE8F5E9);
+  static const expensePillBg = Color(0xFFFFF3E0);
+
   // Border
   static const border = Color(0xFFE2E8F0);
 }
