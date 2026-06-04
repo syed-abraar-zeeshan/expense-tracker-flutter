@@ -23,7 +23,7 @@ class LoginScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isPasswordHidden = ref.read(passwordVisibilityProvider);
+    final isPasswordHidden = ref.watch(passwordVisibilityProvider);
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -57,7 +57,7 @@ class LoginScreen extends ConsumerWidget {
                   labelText: AppStrings.password,
                   hintText: AppStrings.enterPassword,
                   validator: AppValidators.password,
-                  obscureText: true,
+                  obscureText: isPasswordHidden,
                   suffixIcon: IconButton(
                     onPressed: () {
                       ref.read(passwordVisibilityProvider.notifier).toggle();
