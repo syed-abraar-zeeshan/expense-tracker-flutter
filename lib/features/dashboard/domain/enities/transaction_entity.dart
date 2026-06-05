@@ -1,4 +1,4 @@
-import 'package:expense_flow/features/dashboard/domain/enities/dashboard_entity.dart';
+import 'package:expense_flow/features/categories/domain/entities/category_entity.dart';
 
 class TransactionEntity {
   final String id;

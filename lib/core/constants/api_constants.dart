@@ -8,4 +8,6 @@ class ApiConstants {
   static const String register = '/auth/register';
   static const String profile = '/auth/profile';
   static const String dashboard = '/dashboard';
+  static const String categories = '/categories';
+  static const String expenses = '/expenses';
 }

@@ -37,25 +37,3 @@ class DashboardModel extends DashboardEntity {
     };
   }
 }
-
-class CategoryModel extends CategoryEntity {
-  const CategoryModel({
-    required super.id,
-    required super.name,
-    required super.icon,
-    required super.color,
-  });
-
-  factory CategoryModel.fromJson(Map<String, dynamic> json) {
-    return CategoryModel(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      icon: json['icon'] as String,
-      color: json['color'] as String,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {'id': id, 'name': name, 'icon': icon, 'color': color};
-  }
-}
