@@ -47,10 +47,13 @@ class AuthController extends _$AuthController {
       final repository = ref.read(authRepositoryProvider);
       final user = await repository.getProfile();
 
-      print(user.name);
-      print(user.email);
+      if (!ref.mounted) return;
+
+      state = state.copyWith(isLoading: false, user: user);
     } catch (e) {
-      state = state.copyWith(isLoading: false, errorMessage: e.toString());
+      if (!ref.mounted) return;
+
+      state = state.copyWith(errorMessage: e.toString());
     }
   }
 

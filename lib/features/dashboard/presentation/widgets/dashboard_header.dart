@@ -30,43 +30,29 @@ class DashboardHeader extends StatelessWidget {
             children: [
               Text(
                 'Hello, $name 👋',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                style: const TextStyle(
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.lightTextPrimary,
+                  color: Colors.black,
                 ),
               ),
-              Text(
+              const Text(
                 'Good Morning',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.lightTextSecondary,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey,
                 ),
               ),
             ],
           ),
         ),
-        Stack(
-          children: [
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.notifications_none_outlined,
-                size: 28,
-                color: AppColors.lightTextPrimary,
-              ),
-            ),
-            Positioned(
-              right: 12,
-              top: 12,
-              child: Container(
-                width: 8,
-                height: 8,
-                decoration: const BoxDecoration(
-                  color: Colors.red,
-                  shape: BoxShape.circle,
-                ),
-              ),
-            ),
-          ],
+        IconButton(
+          onPressed: () {},
+          icon: const Icon(
+            Icons.notifications_none_rounded,
+            size: 28,
+            color: Colors.black87,
+          ),
         ),
       ],
     );

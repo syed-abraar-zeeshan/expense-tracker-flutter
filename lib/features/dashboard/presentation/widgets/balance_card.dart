@@ -10,9 +10,9 @@ class BalanceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 200,
+      height: 150,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(32),
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -30,37 +30,29 @@ class BalanceCard extends StatelessWidget {
         ],
       ),
       child: Stack(
+        clipBehavior: Clip.none,
         children: [
-          // Background Decoration (Simulated waves)
-          Positioned(
-            bottom: -50,
-            right: -50,
-            child: Container(
-              width: 250,
-              height: 250,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: Colors.white.withOpacity(0.05),
-                  width: 40,
-                ),
-              ),
+          // Background Decoration (Waves)
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.15,
+              child: CustomPaint(painter: WavePainter()),
             ),
           ),
           Positioned(
-            bottom: -20,
-            right: 20,
+            bottom: 0,
+            right: -20,
             child: Opacity(
-              opacity: 0.1,
+              opacity: 0.3,
               child: Icon(
-                Icons.account_balance_wallet_rounded,
-                size: 150,
-                color: Colors.white,
+                Icons.wallet_rounded,
+                size: 120,
+                color: Colors.white.withOpacity(0.8),
               ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(28),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -71,22 +63,19 @@ class BalanceCard extends StatelessWidget {
                       'Total Balance',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 16,
+                        fontSize: 18,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-                    const Icon(
-                      Icons.more_horiz,
-                      color: Colors.white,
-                    ),
+                    const Icon(Icons.more_horiz, color: Colors.white, size: 28),
                   ],
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 10),
                 Text(
                   '₹${balance.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 42,
+                    fontSize: 30,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -97,4 +86,55 @@ class BalanceCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class WavePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+
+    final path = Path();
+    path.moveTo(0, size.height * 0.7);
+
+    path.quadraticBezierTo(
+      size.width * 0.25,
+      size.height * 0.5,
+      size.width * 0.5,
+      size.height * 0.7,
+    );
+
+    path.quadraticBezierTo(
+      size.width * 0.75,
+      size.height * 0.9,
+      size.width,
+      size.height * 0.7,
+    );
+
+    canvas.drawPath(path, paint);
+
+    final path2 = Path();
+    path2.moveTo(0, size.height * 0.8);
+
+    path2.quadraticBezierTo(
+      size.width * 0.25,
+      size.height * 0.6,
+      size.width * 0.5,
+      size.height * 0.8,
+    );
+
+    path2.quadraticBezierTo(
+      size.width * 0.75,
+      size.height * 1.0,
+      size.width,
+      size.height * 0.8,
+    );
+
+    canvas.drawPath(path2, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
