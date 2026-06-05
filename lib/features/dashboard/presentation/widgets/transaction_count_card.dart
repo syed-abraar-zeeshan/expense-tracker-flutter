@@ -23,7 +23,7 @@ class TransactionCountCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
             ),
             child: const Icon(
-              Icons.receipt_long_rounded,
+              Icons.receipt_rounded,
               color: Colors.white,
               size: 20,
             ),
