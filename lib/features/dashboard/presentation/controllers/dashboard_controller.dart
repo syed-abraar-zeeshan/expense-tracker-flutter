@@ -19,11 +19,6 @@ class DashboardController extends _$DashboardController {
           .read(dashboardRepositoryProvider)
           .getDashboard();
 
-      print('BALANCE => ${dashboard.balance}');
-      print('INCOME => ${dashboard.totalIncome}');
-      print('EXPENSE => ${dashboard.totalExpense}');
-      print('COUNT => ${dashboard.transactionCount}');
-
       if (!ref.mounted) return;
 
       state = state.copyWith(isLoading: false, dashboard: dashboard);

@@ -1,4 +1,4 @@
-import 'package:expense_flow/features/dashboard/data/models/dashboard_model.dart';
+import 'package:expense_flow/features/categories/data/models/category_model.dart';
 import 'package:expense_flow/features/dashboard/domain/enities/transaction_entity.dart';
 
 class TransactionModel extends TransactionEntity {

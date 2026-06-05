@@ -8,6 +8,7 @@ import 'package:expense_flow/features/dashboard/presentation/widgets/summary_car
 import 'package:expense_flow/features/dashboard/presentation/widgets/transaction_count_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -95,9 +96,36 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           children: [
             _buildNavItem(0, Icons.home_rounded, 'Home'),
             _buildNavItem(1, Icons.receipt_long_rounded, 'Expenses'),
+            const SizedBox(width: 48), // Space for the FAB
             _buildNavItem(2, Icons.pie_chart_rounded, 'Categories'),
             _buildNavItem(3, Icons.person_rounded, 'Profile'),
           ],
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(top: 20),
+        child: FloatingActionButton(
+          onPressed: () => context.push('/add-expense'),
+          backgroundColor: AppColors.primary,
+          elevation: 4,
+          shape: const CircleBorder(),
+          child: Container(
+            width: 60,
+            height: 60,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  AppColors.balanceGradientStart,
+                  AppColors.balanceGradientEnd,
+                ],
+              ),
+            ),
+            child: const Icon(Icons.add, color: Colors.white, size: 32),
+          ),
         ),
       ),
     );
@@ -109,7 +137,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () => setState(() => _selectedIndex = index),
+      onTap: () {
+        setState(() => _selectedIndex = index);
+        if (index == 1) {
+          context.push('/expenses');
+        }
+      },
       child: SizedBox(
         width: 80,
         child: Column(
