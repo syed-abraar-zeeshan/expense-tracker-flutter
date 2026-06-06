@@ -33,6 +33,7 @@ class AppStrings {
       'Password must contain at least one special character';
   static const confirmPasswordRequired = 'Confirm Password is required';
   static const passwordMismatch = 'Passwords do not match';
+  static const logout = 'Logout';
 
   // Expense
   static const addExpense = 'Add Expense';
@@ -42,14 +43,35 @@ class AppStrings {
 
   // Dashboard
   static const dashboard = 'Dashboard';
+  static const totalBalance = 'Total Balance';
+  static const income = 'Income';
+  static const expense = 'Expense';
+  static const transactions = 'Transactions';
+  static const recentTransactions = 'Recent Transactions';
+  static const viewAll = 'View All';
+  static const noTransactionsYet = 'No Transactions Yet';
+  static const startTracking =
+      'Start tracking your income\nand expenses to see them here.';
+  static const addTransaction = 'Add Transaction';
+  static const goodMorning = 'Good Morning';
+  static String hello(String name) => 'Hello, $name 👋';
 
-  // Settings
-  static const settings = 'Settings';
-  static const logout = 'Logout';
+  // Profile
+  static const profile = 'Profile';
+  static const editProfile = 'Edit Profile';
+  static const themeMode = 'Theme Mode';
+  static const aboutApp = 'About App';
+  static const guestUser = 'Guest User';
+  static const guestEmail = 'guest@example.com';
+
+  // Navigation
+  static const home = 'Home';
+  static const categories = 'Categories';
 
   // Generic
   static const loading = 'Loading...';
   static const retry = 'Retry';
   static const cancel = 'Cancel';
   static const save = 'Save';
+  static const total = 'Total';
 }

@@ -1,3 +1,4 @@
+import 'package:expense_flow/features/dashboard/presentation/controllers/dashboard_controller.dart';
 import 'package:expense_flow/features/expenses/data/models/expense_request_model.dart';
 import 'package:expense_flow/features/expenses/presentation/controllers/expense_state.dart';
 import 'package:expense_flow/features/expenses/presentation/providers/expense_providers.dart';
@@ -21,6 +22,9 @@ class ExpenseController extends _$ExpenseController {
 
     try {
       await ref.read(expenseRepositoryProvider).createExpense(request: request);
+      
+      // Refresh dashboard data immediately
+      await ref.read(dashboardControllerProvider.notifier).getDashboard();
 
       if (!ref.mounted) return;
 
@@ -36,3 +40,4 @@ class ExpenseController extends _$ExpenseController {
     state = state.copyWith(errorMessage: null);
   }
 }
+
