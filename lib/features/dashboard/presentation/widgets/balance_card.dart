@@ -1,140 +1,131 @@
 import 'package:expense_flow/core/theme/app_colors.dart';
+import 'package:expense_flow/core/theme/app_dimensions.dart';
+import 'package:expense_flow/core/utils/app_currency_formatter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:gap/gap.dart';
 
-class BalanceCard extends StatelessWidget {
+class BalanceCard extends StatefulWidget {
   final double balance;
+  final String symbol;
+  final double conversionRate;
 
-  const BalanceCard({super.key, required this.balance});
+  const BalanceCard({
+    super.key,
+    required this.balance,
+    required this.symbol,
+    required this.conversionRate,
+  });
+
+  @override
+  State<BalanceCard> createState() => _BalanceCardState();
+}
+
+class _BalanceCardState extends State<BalanceCard> {
+  bool _isVisible = true;
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Container(
       width: double.infinity,
-      height: 150,
+      padding: const EdgeInsets.all(AppDimensions.lg),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(32),
+        borderRadius: BorderRadius.circular(AppDimensions.radiusXl),
         gradient: const LinearGradient(
+          colors: AppColors.primaryGradient,
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            AppColors.balanceGradientStart,
-            AppColors.balanceGradientEnd,
-          ],
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.3),
+            color: AppColors.primary.withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
         ],
       ),
       child: Stack(
-        clipBehavior: Clip.none,
         children: [
-          // Background Decoration (Waves)
-          Positioned.fill(
-            child: Opacity(
-              opacity: 0.15,
-              child: CustomPaint(painter: WavePainter()),
-            ),
-          ),
           Positioned(
-            bottom: 0,
             right: -20,
+            bottom: -20,
             child: Opacity(
-              opacity: 0.3,
-              child: Icon(
-                Icons.wallet_rounded,
-                size: 120,
-                color: Colors.white.withOpacity(0.8),
+              opacity: 0.1,
+              child: const Icon(
+                Icons.account_balance_wallet_rounded,
+                size: 160,
+                color: Colors.white,
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(28),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Total Balance',
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      color: Colors.white.withValues(alpha: 0.8),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => setState(() => _isVisible = !_isVisible),
+                    icon: Icon(
+                      _isVisible
+                          ? Icons.visibility_outlined
+                          : Icons.visibility_off_outlined,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                  ),
+                ],
+              ),
+              const Gap(AppDimensions.xs),
+              Text(
+                _isVisible ? AppCurrencyFormatter.format(widget.balance, symbol: widget.symbol, conversionRate: widget.conversionRate) : '••••••••',
+                style: theme.textTheme.displaySmall?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -1,
+                ),
+              ),
+              const Gap(AppDimensions.lg),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text(
-                      'Total Balance',
-                      style: TextStyle(
+                    const Icon(
+                      Icons.trending_up_rounded,
+                      color: Colors.white,
+                      size: 16,
+                    ),
+                    const Gap(6),
+                    Text(
+                      '+2.5% this month',
+                      style: theme.textTheme.bodySmall?.copyWith(
                         color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w400,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const Icon(Icons.more_horiz, color: Colors.white, size: 28),
                   ],
                 ),
-                const SizedBox(height: 10),
-                Text(
-                  '₹${balance.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),
-    );
+    ).animate().fadeIn(delay: 100.ms).scale(begin: const Offset(0.9, 0.9));
   }
-}
-
-class WavePainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0;
-
-    final path = Path();
-    path.moveTo(0, size.height * 0.7);
-
-    path.quadraticBezierTo(
-      size.width * 0.25,
-      size.height * 0.5,
-      size.width * 0.5,
-      size.height * 0.7,
-    );
-
-    path.quadraticBezierTo(
-      size.width * 0.75,
-      size.height * 0.9,
-      size.width,
-      size.height * 0.7,
-    );
-
-    canvas.drawPath(path, paint);
-
-    final path2 = Path();
-    path2.moveTo(0, size.height * 0.8);
-
-    path2.quadraticBezierTo(
-      size.width * 0.25,
-      size.height * 0.6,
-      size.width * 0.5,
-      size.height * 0.8,
-    );
-
-    path2.quadraticBezierTo(
-      size.width * 0.75,
-      size.height * 1.0,
-      size.width,
-      size.height * 0.8,
-    );
-
-    canvas.drawPath(path2, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

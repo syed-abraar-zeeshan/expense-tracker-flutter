@@ -59,12 +59,12 @@ class AuthController extends _$AuthController {
 
   Future<void> logout() async {
     await ref.read(secureStorageProvider).clearToken();
+    state = const AuthState();
   }
 
   Future<bool> checkAuthStatus() async {
     final token = await ref.read(secureStorageProvider).getToken();
 
-    print('TOKEN => $token');
     return token != null && token.isNotEmpty;
   }
 

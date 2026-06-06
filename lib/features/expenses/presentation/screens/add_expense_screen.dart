@@ -1,17 +1,21 @@
 import 'dart:io';
 
+import 'package:expense_flow/core/theme/app_colors.dart';
+import 'package:expense_flow/core/theme/app_dimensions.dart';
 import 'package:expense_flow/core/widgets/app_button.dart';
-import 'package:expense_flow/core/widgets/app_dropdown.dart';
 import 'package:expense_flow/core/widgets/app_snackbar.dart';
-import 'package:expense_flow/core/widgets/app_text_field.dart';
+import 'package:expense_flow/features/settings/presentation/controllers/currency_controller.dart';
 import 'package:expense_flow/features/categories/presentation/controllers/categories_controller.dart';
 import 'package:expense_flow/features/expenses/data/models/expense_request_model.dart';
 import 'package:expense_flow/features/expenses/presentation/controllers/expense_controller.dart';
 import 'package:expense_flow/features/expenses/presentation/form/expense_form_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 class AddExpenseScreen extends ConsumerStatefulWidget {
   const AddExpenseScreen({super.key});
@@ -22,32 +26,45 @@ class AddExpenseScreen extends ConsumerStatefulWidget {
 
 class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
   final formController = ExpenseFormController();
+  final FocusNode _amountFocusNode = FocusNode();
+  bool _isAmountFocused = false;
 
   @override
   void initState() {
     super.initState();
-
     Future.microtask(() {
       ref.read(categoriesControllerProvider.notifier).getCategories();
     });
+
+    _amountFocusNode.addListener(() {
+      setState(() {
+        _isAmountFocused = _amountFocusNode.hasFocus;
+      });
+    });
+
+    formController.selectedType = 'expense';
   }
 
   @override
   void dispose() {
+    _amountFocusNode.dispose();
     formController.dispose();
     super.dispose();
   }
 
   Future<void> _selectDate() async {
     if (Platform.isIOS) {
-      DateTime selectedDate = DateTime.now();
+      DateTime selectedDate = formController.selectedDate;
 
       showCupertinoModalPopup(
         context: context,
         builder: (_) {
           return Container(
             height: 300,
-            color: Colors.white,
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+            ),
             child: Column(
               children: [
                 Align(
@@ -55,11 +72,10 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
                   child: CupertinoButton(
                     child: const Text('Done'),
                     onPressed: () {
+                      formController.selectedDate = selectedDate;
                       formController.dateController.text =
-                          '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}';
-
+                          DateFormat.yMMMd().format(selectedDate);
                       Navigator.pop(context);
-
                       setState(() {});
                     },
                   ),
@@ -67,7 +83,7 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
                 Expanded(
                   child: CupertinoDatePicker(
                     mode: CupertinoDatePickerMode.date,
-                    initialDateTime: DateTime.now(),
+                    initialDateTime: selectedDate,
                     onDateTimeChanged: (date) {
                       selectedDate = date;
                     },
@@ -81,15 +97,15 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
     } else {
       final pickedDate = await showDatePicker(
         context: context,
-        initialDate: DateTime.now(),
+        initialDate: formController.selectedDate,
         firstDate: DateTime(2020),
         lastDate: DateTime(2100),
       );
 
       if (pickedDate != null) {
+        formController.selectedDate = pickedDate;
         formController.dateController.text =
-            '${pickedDate.day}/${pickedDate.month}/${pickedDate.year}';
-
+            DateFormat.yMMMd().format(pickedDate);
         setState(() {});
       }
     }
@@ -97,15 +113,19 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(categoriesControllerProvider);
+    final categoriesState = ref.watch(categoriesControllerProvider);
+    final expenseState = ref.watch(expenseControllerProvider);
+    final currentCurrency = ref.watch(currencyControllerProvider);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     ref.listen(expenseControllerProvider, (previous, next) {
       if (next.isSuccess) {
         AppSnackbar.show(
           context,
-          message: 'Expense added successfully',
+          message: 'Transaction added successfully',
           type: SnackbarType.success,
         );
-
         context.pop();
       }
 
@@ -115,110 +135,394 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
           message: next.errorMessage!,
           type: SnackbarType.error,
         );
+        ref.read(expenseControllerProvider.notifier).clearError();
       }
     });
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Add Expense')),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            AppTextField(
-              controller: formController.titleController,
-              labelText: 'Title',
-              hintText: 'Enter expense title',
+      body: CustomScrollView(
+        slivers: [
+          // 1. Header
+          SliverAppBar(
+            pinned: true,
+            backgroundColor: theme.scaffoldBackgroundColor,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back_ios_new_rounded),
+              onPressed: () => context.pop(),
             ),
-            const SizedBox(height: 16),
-            AppTextField(
-              controller: formController.amountController,
-              labelText: 'Amount',
-              hintText: 'Enter amount',
-              keyboardType: TextInputType.number,
-              prefixIcon: const Icon(Icons.currency_rupee),
+            title: Text(
+              'New Transaction',
+              style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
             ),
-            const SizedBox(height: 16),
-            AppDropdown<String>(
-              labelText: 'Category',
-              value: formController.selectedCategoryId,
-              hintText: 'Select Category',
-              // prefixIcon: const Icon(Icons.category),
-              items: state.categories.map((category) {
-                return DropdownMenuItem(
-                  value: category.id,
-                  child: Text('${category.icon} ${category.name}'),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  formController.selectedCategoryId = value;
-                });
-              },
-            ),
-            const SizedBox(height: 16),
-            AppDropdown<String>(
-              labelText: 'Type',
-              value: formController.selectedType,
-              hintText: 'Select Type',
-              prefixIcon: const Icon(Icons.swap_vert),
+            centerTitle: true,
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppDimensions.lg),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Gap(AppDimensions.lg),
 
-              items: const [
-                DropdownMenuItem(value: 'expense', child: Text('Expense')),
-                DropdownMenuItem(value: 'income', child: Text('Income')),
-              ],
+                  // 4. Transaction Type (Segmented Control)
+                  _buildTransactionTypeControl(theme),
 
-              onChanged: (value) {
-                setState(() {
-                  formController.selectedType = value!;
-                });
-              },
+                  const Gap(AppDimensions.xxl),
+
+                  // 2. Amount Section
+                  _buildAmountSection(theme, isDark, currentCurrency.symbol),
+
+                  const Gap(AppDimensions.xxl),
+
+                  // Title Input
+                  _buildTitleSection(theme),
+
+                  const Gap(AppDimensions.xl),
+
+                  // 3. Category Selection
+                  _buildCategorySelection(theme, categoriesState),
+
+                  const Gap(AppDimensions.xl),
+
+                  // 5. Date Picker
+                  _buildDatePickerCard(theme),
+
+                  const Gap(AppDimensions.xl),
+
+                  // 6. Notes Section
+                  _buildNotesSection(theme),
+
+                  const Gap(AppDimensions.xxl),
+
+                  // 7. Save Button
+                  AppButton(
+                    text: 'Save Transaction',
+                    isLoading: expenseState.isLoading,
+                    onPressed: () async {
+                      if (formController.amountController.text.isEmpty ||
+                          formController.titleController.text.isEmpty ||
+                          formController.selectedCategoryId == null) {
+                        AppSnackbar.show(
+                          context,
+                          message: 'Please fill in all required fields',
+                          type: SnackbarType.error,
+                        );
+                        return;
+                      }
+
+                      final request = ExpenseRequestModel(
+                        title: formController.titleController.text.trim(),
+                        amount: double.tryParse(formController.amountController.text.trim()) ?? 0.0,
+                        category: formController.selectedCategoryId!,
+                        note: formController.noteController.text.trim(),
+                        type: formController.selectedType,
+                        date: formController.selectedDate,
+                      );
+
+                      await ref
+                          .read(expenseControllerProvider.notifier)
+                          .createExpense(request: request);
+                    },
+                  ).animate().fadeIn().scale(delay: 500.ms),
+
+                  const Gap(AppDimensions.massive),
+                ],
+              ),
             ),
-            const SizedBox(height: 16),
-            AppTextField(
-              controller: formController.dateController,
-              labelText: 'Date',
-              hintText: 'Select Date',
-              readOnly: true,
-              prefixIcon: const Icon(Icons.calendar_today),
-              onTap: _selectDate,
-            ),
-            const SizedBox(height: 16),
-            AppTextField(
-              controller: formController.noteController,
-              labelText: 'Note',
-              hintText: 'Optional note',
-              maxLines: 3,
-              prefixIcon: const Icon(Icons.notes),
-            ),
-
-            const SizedBox(height: 24),
-
-            AppButton(
-              text: 'Save Expense',
-              onPressed: () async {
-                final request = ExpenseRequestModel(
-                  title: formController.titleController.text.trim(),
-                  amount: double.parse(
-                    formController.amountController.text.trim(),
-                  ),
-                  category: formController.selectedCategoryId ?? '',
-                  note: formController.noteController.text.trim(),
-                  type: formController.selectedType,
-                  date: formController.selectedDate,
-                );
-
-                print(request.toJson());
-
-                // Next Step
-                await ref
-                    .read(expenseControllerProvider.notifier)
-                    .createExpense(request: request);
-              },
-            ),
-            SizedBox(height: 100),
-          ],
-        ),
+          ),
+        ],
       ),
     );
+  }
+
+  Widget _buildTransactionTypeControl(ThemeData theme) {
+    final isExpense = formController.selectedType == 'expense';
+
+    return Container(
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.05)),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: GestureDetector(
+              onTap: () => setState(() => formController.selectedType = 'expense'),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                decoration: BoxDecoration(
+                  color: isExpense ? AppColors.error : Colors.transparent,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                alignment: Alignment.center,
+                child: Text(
+                  'Expense',
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    color: isExpense ? Colors.white : theme.textTheme.bodyMedium?.color,
+                    fontWeight: isExpense ? FontWeight.w700 : FontWeight.w500,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: GestureDetector(
+              onTap: () => setState(() => formController.selectedType = 'income'),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                decoration: BoxDecoration(
+                  color: !isExpense ? AppColors.success : Colors.transparent,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                alignment: Alignment.center,
+                child: Text(
+                  'Income',
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    color: !isExpense ? Colors.white : theme.textTheme.bodyMedium?.color,
+                    fontWeight: !isExpense ? FontWeight.w700 : FontWeight.w500,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ).animate().fadeIn().slideY(begin: -0.1);
+  }
+
+  Widget _buildAmountSection(ThemeData theme, bool isDark, String symbol) {
+    final isExpense = formController.selectedType == 'expense';
+    final primaryColor = isExpense ? AppColors.error : AppColors.success;
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
+      decoration: BoxDecoration(
+        color: _isAmountFocused ? primaryColor.withValues(alpha: 0.05) : theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(32),
+        border: Border.all(
+          color: _isAmountFocused ? primaryColor : theme.dividerColor.withValues(alpha: 0.05),
+          width: _isAmountFocused ? 2 : 1,
+        ),
+        boxShadow: _isAmountFocused
+            ? [
+                BoxShadow(
+                  color: primaryColor.withValues(alpha: 0.2),
+                  blurRadius: 20,
+                  offset: const Offset(0, 8),
+                )
+              ]
+            : [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.02),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                )
+              ],
+      ),
+      child: Column(
+        children: [
+          Text(
+            'Amount',
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: _isAmountFocused ? primaryColor : theme.textTheme.bodySmall?.color,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const Gap(16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                symbol,
+                style: theme.textTheme.displayMedium?.copyWith(
+                  color: primaryColor,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const Gap(8),
+              IntrinsicWidth(
+                child: TextField(
+                  controller: formController.amountController,
+                  focusNode: _amountFocusNode,
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  style: theme.textTheme.displayLarge?.copyWith(
+                    color: theme.textTheme.bodyLarge?.color,
+                    fontWeight: FontWeight.w800,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: '0',
+                    hintStyle: theme.textTheme.displayLarge?.copyWith(
+                      color: theme.disabledColor.withValues(alpha: 0.3),
+                      fontWeight: FontWeight.w800,
+                    ),
+                    border: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    errorBorder: InputBorder.none,
+                    disabledBorder: InputBorder.none,
+                    contentPadding: EdgeInsets.zero,
+                    isDense: true,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ).animate().fadeIn(delay: 100.ms).scale(begin: const Offset(0.95, 0.95));
+  }
+
+  Widget _buildTitleSection(ThemeData theme) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Title', style: theme.textTheme.titleSmall),
+        const Gap(8),
+        TextField(
+          controller: formController.titleController,
+          style: theme.textTheme.bodyLarge,
+          decoration: InputDecoration(
+            hintText: 'What was this for?',
+            filled: true,
+            fillColor: theme.colorScheme.surface,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide.none,
+            ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          ),
+        ),
+      ],
+    ).animate().fadeIn(delay: 200.ms);
+  }
+
+  Widget _buildCategorySelection(ThemeData theme, dynamic categoriesState) {
+    final categories = categoriesState.categories;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Category', style: theme.textTheme.titleSmall),
+        const Gap(12),
+        if (categoriesState.isLoading)
+          const Center(child: CircularProgressIndicator())
+        else if (categories.isEmpty)
+          Text('No categories found.', style: theme.textTheme.bodyMedium)
+        else
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: categories.map<Widget>((category) {
+                final isSelected = formController.selectedCategoryId == category.id;
+                return GestureDetector(
+                  onTap: () => setState(() => formController.selectedCategoryId = category.id),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    margin: const EdgeInsets.only(right: 12),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: isSelected ? AppColors.primary : theme.colorScheme.surface,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: isSelected ? AppColors.primary : theme.dividerColor.withValues(alpha: 0.05),
+                      ),
+                      boxShadow: isSelected
+                          ? [
+                              BoxShadow(
+                                color: AppColors.primary.withValues(alpha: 0.3),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              )
+                            ]
+                          : [],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(category.icon, style: const TextStyle(fontSize: 18)),
+                        const Gap(8),
+                        Text(
+                          category.name,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: isSelected ? Colors.white : theme.textTheme.bodyLarge?.color,
+                            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+      ],
+    ).animate().fadeIn(delay: 300.ms).slideX(begin: 0.1);
+  }
+
+  Widget _buildDatePickerCard(ThemeData theme) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Date', style: theme.textTheme.titleSmall),
+        const Gap(8),
+        GestureDetector(
+          onTap: _selectDate,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surface,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: theme.dividerColor.withValues(alpha: 0.05)),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.calendar_today_rounded, color: AppColors.primary, size: 22),
+                const Gap(12),
+                Text(
+                  formController.dateController.text.isEmpty
+                      ? DateFormat.yMMMd().format(DateTime.now())
+                      : formController.dateController.text,
+                  style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w500),
+                ),
+                const Spacer(),
+                Icon(Icons.chevron_right_rounded, color: theme.disabledColor),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ).animate().fadeIn(delay: 400.ms);
+  }
+
+  Widget _buildNotesSection(ThemeData theme) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Notes', style: theme.textTheme.titleSmall),
+        const Gap(8),
+        TextField(
+          controller: formController.noteController,
+          maxLines: 3,
+          style: theme.textTheme.bodyLarge,
+          decoration: InputDecoration(
+            hintText: 'Add any extra details...',
+            filled: true,
+            fillColor: theme.colorScheme.surface,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide.none,
+            ),
+            contentPadding: const EdgeInsets.all(20),
+          ),
+        ),
+      ],
+    ).animate().fadeIn(delay: 500.ms);
   }
 }

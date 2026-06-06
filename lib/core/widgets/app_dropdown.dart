@@ -38,7 +38,7 @@ class AppDropdown<T> extends StatelessWidget {
         ],
 
         DropdownButtonFormField<T>(
-          value: value,
+          initialValue: value,
           validator: validator,
           decoration: InputDecoration(
             hintText: hintText,
