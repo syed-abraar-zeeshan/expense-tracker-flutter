@@ -1,4 +1,3 @@
-import 'package:expense_flow/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:expense_flow/core/network/api_client.dart';
 import 'package:expense_flow/core/network/base_api_service.dart';
 import 'package:expense_flow/core/storage/secure_storage_provider.dart';
@@ -13,8 +12,6 @@ final apiServiceProvider = Provider<BaseApiService>((ref) {
   final dio = ApiClient.create(storage);
   return BaseApiService(dio);
 });
-
-
 
 final authRemoteDatasourceProvider = Provider<AuthRemoteDatasource>((ref) {
   return AuthRemoteDatasourceImpl(apiService: ref.watch(apiServiceProvider));

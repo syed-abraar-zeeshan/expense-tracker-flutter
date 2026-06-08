@@ -13,7 +13,7 @@ part of 'currency_controller.dart';
 final currencyControllerProvider = CurrencyControllerProvider._();
 
 final class CurrencyControllerProvider
-    extends $NotifierProvider<CurrencyController, CurrencyInfo> {
+    extends $NotifierProvider<CurrencyController, CurrencyState> {
   CurrencyControllerProvider._()
     : super(
         from: null,
@@ -33,28 +33,28 @@ final class CurrencyControllerProvider
   CurrencyController create() => CurrencyController();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(CurrencyInfo value) {
+  Override overrideWithValue(CurrencyState value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<CurrencyInfo>(value),
+      providerOverride: $SyncValueProvider<CurrencyState>(value),
     );
   }
 }
 
 String _$currencyControllerHash() =>
-    r'6af064fac3b2565477ffad6fc62750afe0c8c698';
+    r'bdfcb8f388302fe18a70fa6f18f15fcc5ca5cfab';
 
-abstract class _$CurrencyController extends $Notifier<CurrencyInfo> {
-  CurrencyInfo build();
+abstract class _$CurrencyController extends $Notifier<CurrencyState> {
+  CurrencyState build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref = this.ref as $Ref<CurrencyInfo, CurrencyInfo>;
+    final ref = this.ref as $Ref<CurrencyState, CurrencyState>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<CurrencyInfo, CurrencyInfo>,
-              CurrencyInfo,
+              AnyNotifier<CurrencyState, CurrencyState>,
+              CurrencyState,
               Object?,
               Object?
             >;

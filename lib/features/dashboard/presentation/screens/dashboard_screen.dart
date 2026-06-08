@@ -37,7 +37,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     final dashboard = ref.watch(
       dashboardControllerProvider.select((s) => s.dashboard),
     );
-    final currency = ref.watch(currencyControllerProvider);
+    final currency = ref.watch(currencyControllerProvider).selectedCurrency;
     final theme = Theme.of(context);
 
     return Scaffold(

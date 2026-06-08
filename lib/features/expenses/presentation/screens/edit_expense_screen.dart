@@ -7,6 +7,7 @@ import 'package:expense_flow/core/widgets/app_snackbar.dart';
 import 'package:expense_flow/features/settings/presentation/controllers/currency_controller.dart';
 import 'package:expense_flow/features/categories/presentation/controllers/categories_controller.dart';
 import 'package:expense_flow/features/dashboard/domain/enities/transaction_entity.dart';
+import 'package:expense_flow/features/expenses/data/models/expense_request_model.dart';
 import 'package:expense_flow/features/expenses/presentation/controllers/expense_controller.dart';
 import 'package:expense_flow/features/expenses/presentation/form/expense_form_controller.dart';
 import 'package:flutter/cupertino.dart';
@@ -58,7 +59,7 @@ class _EditExpenseScreenState extends ConsumerState<EditExpenseScreen> {
     formController.dateController.text = DateFormat.yMMMd().format(
       widget.transaction.date,
     );
-    // Assuming note is empty in the entity since it's not present, we skip or set if it exists
+    formController.noteController.text = widget.transaction.note ?? '';
   }
 
   @override
@@ -147,13 +148,9 @@ class _EditExpenseScreenState extends ConsumerState<EditExpenseScreen> {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              // TODO: Wire up actual delete logic to controller when backend is ready
-              AppSnackbar.show(
-                context,
-                message: 'Transaction deleted (UI Simulated)',
-                type: SnackbarType.success,
-              );
-              context.pop();
+              ref.read(expenseControllerProvider.notifier).deleteExpense(
+                    id: widget.transaction.id,
+                  );
             },
             child: const Text(
               'Delete',
@@ -172,7 +169,7 @@ class _EditExpenseScreenState extends ConsumerState<EditExpenseScreen> {
   Widget build(BuildContext context) {
     final categoriesState = ref.watch(categoriesControllerProvider);
     final expenseState = ref.watch(expenseControllerProvider);
-    final currentCurrency = ref.watch(currencyControllerProvider);
+    final currentCurrency = ref.watch(currencyControllerProvider).selectedCurrency;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
@@ -279,14 +276,23 @@ class _EditExpenseScreenState extends ConsumerState<EditExpenseScreen> {
                         return;
                       }
 
-                      // Since controller doesn't have an update method yet, we simulate or call create
-                      // Ideally: ref.read(expenseControllerProvider.notifier).updateExpense(...)
-                      AppSnackbar.show(
-                        context,
-                        message: 'Transaction updated (UI Simulated)',
-                        type: SnackbarType.success,
+                      final request = ExpenseRequestModel(
+                        title: formController.titleController.text,
+                        amount: double.parse(
+                          formController.amountController.text,
+                        ),
+                        category: formController.selectedCategoryId!,
+                        note: formController.noteController.text,
+                        type: formController.selectedType,
+                        date: formController.selectedDate,
                       );
-                      context.pop();
+
+                      ref
+                          .read(expenseControllerProvider.notifier)
+                          .updateExpense(
+                            id: widget.transaction.id,
+                            request: request,
+                          );
                     },
                   ).animate().fadeIn().scale(delay: 500.ms),
 

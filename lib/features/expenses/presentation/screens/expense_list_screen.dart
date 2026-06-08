@@ -3,6 +3,8 @@ import 'package:expense_flow/core/theme/app_dimensions.dart';
 import 'package:expense_flow/core/utils/app_currency_formatter.dart';
 import 'package:expense_flow/features/dashboard/domain/enities/transaction_entity.dart';
 import 'package:expense_flow/features/dashboard/presentation/controllers/dashboard_controller.dart';
+import 'package:expense_flow/features/expenses/presentation/controllers/expense_controller.dart';
+import 'package:expense_flow/features/expenses/presentation/controllers/transactions_controller.dart';
 import 'package:expense_flow/features/settings/presentation/controllers/currency_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -31,28 +33,32 @@ class _ExpenseListScreenState extends ConsumerState<ExpenseListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final transactionsAsync = ref.watch(transactionsControllerProvider);
     final dashboardState = ref.watch(dashboardControllerProvider);
-    final currentCurrency = ref.watch(currencyControllerProvider);
+    final currentCurrency = ref.watch(currencyControllerProvider).selectedCurrency;
     final theme = Theme.of(context);
 
-    final allTransactions = dashboardState.dashboard?.recentTransactions ?? [];
+    ref.listen(expenseControllerProvider, (previous, next) {
+      if (next.isSuccess) {
+        // We only show snackbar here, refresh is handled by controller
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Transaction deleted successfully'),
+            backgroundColor: AppColors.success,
+          ),
+        );
+      }
 
-    // UI-level filtering
-    final filteredTransactions = allTransactions.where((tx) {
-      final matchesSearch =
-          tx.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-          tx.category.name.toLowerCase().contains(_searchQuery.toLowerCase());
-
-      final isExpense = tx.type.toLowerCase() == 'expense';
-      final isIncome = tx.type.toLowerCase() == 'income';
-
-      final matchesType =
-          _selectedFilter == 'All' ||
-          (_selectedFilter == 'Income' && isIncome) ||
-          (_selectedFilter == 'Expense' && isExpense);
-
-      return matchesSearch && matchesType;
-    }).toList();
+      if (next.errorMessage != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(next.errorMessage!),
+            backgroundColor: AppColors.error,
+          ),
+        );
+        ref.read(expenseControllerProvider.notifier).clearError();
+      }
+    });
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -68,72 +74,87 @@ class _ExpenseListScreenState extends ConsumerState<ExpenseListScreen> {
         centerTitle: true,
       ),
       body: RefreshIndicator(
-        onRefresh: () =>
-            ref.read(dashboardControllerProvider.notifier).getDashboard(),
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppDimensions.lg,
-                ),
-                child: Column(
-                  children: [
-                    const Gap(AppDimensions.md),
+        onRefresh: () async {
+          await ref.read(transactionsControllerProvider.notifier).refresh();
+          await ref.read(dashboardControllerProvider.notifier).getDashboard();
+        },
+        child: transactionsAsync.when(
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (err, stack) => Center(child: Text('Error: $err')),
+          data: (allTransactions) {
+            // UI-level filtering
+            final filteredTransactions = allTransactions.where((tx) {
+              final matchesSearch =
+                  tx.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+                  tx.category.name.toLowerCase().contains(_searchQuery.toLowerCase());
 
-                    // 1. Header (Balance Summary)
-                    _buildSummaryHeader(dashboardState.dashboard, theme, currentCurrency.symbol, currentCurrency.conversionRate),
+              final isExpense = tx.type.toLowerCase() == 'expense';
+              final isIncome = tx.type.toLowerCase() == 'income';
 
-                    const Gap(AppDimensions.xl),
+              final matchesType =
+                  _selectedFilter == 'All' ||
+                  (_selectedFilter == 'Income' && isIncome) ||
+                  (_selectedFilter == 'Expense' && isExpense);
 
-                    // 2. Search Bar
-                    _buildSearchBar(theme),
+              return matchesSearch && matchesType;
+            }).toList();
 
-                    const Gap(AppDimensions.lg),
-
-                    // 3. Filters
-                    _buildFilters(theme),
-
-                    const Gap(AppDimensions.xl),
-                  ],
-                ),
-              ),
-            ),
-
-            // 4. Transaction List
-            if (dashboardState.isLoading)
-              const SliverToBoxAdapter(
-                child: Center(
+            return CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
                   child: Padding(
-                    padding: EdgeInsets.all(40.0),
-                    child:
-                        CircularProgressIndicator(), // Skeleton can be added here
-                  ),
-                ),
-              )
-            else if (filteredTransactions.isEmpty)
-              SliverToBoxAdapter(child: _buildEmptyState(theme))
-            else
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppDimensions.lg,
-                ),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) => _buildTransactionCard(
-                      filteredTransactions[index],
-                      theme,
-                      index,
-                      currentCurrency.symbol,
-                      currentCurrency.conversionRate,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppDimensions.lg,
                     ),
-                    childCount: filteredTransactions.length,
+                    child: Column(
+                      children: [
+                        const Gap(AppDimensions.md),
+
+                        // 1. Header (Balance Summary)
+                        _buildSummaryHeader(dashboardState.dashboard, theme, currentCurrency.symbol, currentCurrency.conversionRate),
+
+                        const Gap(AppDimensions.xl),
+
+                        // 2. Search Bar
+                        _buildSearchBar(theme),
+
+                        const Gap(AppDimensions.lg),
+
+                        // 3. Filters
+                        _buildFilters(theme),
+
+                        const Gap(AppDimensions.xl),
+                      ],
+                    ),
                   ),
                 ),
-              ),
 
-            const SliverToBoxAdapter(child: Gap(100)),
-          ],
+                // 4. Transaction List
+                if (filteredTransactions.isEmpty)
+                  SliverToBoxAdapter(child: _buildEmptyState(theme))
+                else
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppDimensions.lg,
+                    ),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) => _buildTransactionCard(
+                          filteredTransactions[index],
+                          theme,
+                          index,
+                          currentCurrency.symbol,
+                          currentCurrency.conversionRate,
+                        ),
+                        childCount: filteredTransactions.length,
+                      ),
+                    ),
+                  ),
+
+                const SliverToBoxAdapter(child: Gap(100)),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -327,13 +348,7 @@ class _ExpenseListScreenState extends ConsumerState<ExpenseListScreen> {
           child: const Icon(Icons.delete_outline_rounded, color: Colors.white),
         ),
         onDismissed: (direction) {
-          // TODO: Actually delete via controller here
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: const Text('Transaction deleted (UI Simulated)'),
-              backgroundColor: AppColors.error,
-            ),
-          );
+          ref.read(expenseControllerProvider.notifier).deleteExpense(id: tx.id);
         },
         child: InkWell(
           onTap: () => context.push('/edit-expense', extra: tx),

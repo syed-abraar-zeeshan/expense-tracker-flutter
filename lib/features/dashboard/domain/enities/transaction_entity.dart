@@ -7,6 +7,7 @@ class TransactionEntity {
   final String type;
   final DateTime date;
   final CategoryEntity category;
+  final String? note;
 
   const TransactionEntity({
     required this.id,
@@ -15,5 +16,6 @@ class TransactionEntity {
     required this.type,
     required this.date,
     required this.category,
+    this.note,
   });
 }
