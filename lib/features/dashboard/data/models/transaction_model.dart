@@ -9,6 +9,7 @@ class TransactionModel extends TransactionEntity {
     required super.type,
     required super.date,
     required super.category,
+    super.note,
   });
 
   factory TransactionModel.fromJson(Map<String, dynamic> json) {
@@ -21,6 +22,7 @@ class TransactionModel extends TransactionEntity {
       category: CategoryModel.fromJson(
         json['category'] as Map<String, dynamic>,
       ),
+      note: json['note'] as String?,
     );
   }
 
@@ -32,6 +34,7 @@ class TransactionModel extends TransactionEntity {
       'type': type,
       'date': date.toIso8601String(),
       'category': (category as CategoryModel).toJson(),
+      'note': note,
     };
   }
 }

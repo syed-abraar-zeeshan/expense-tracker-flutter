@@ -115,7 +115,7 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
   Widget build(BuildContext context) {
     final categoriesState = ref.watch(categoriesControllerProvider);
     final expenseState = ref.watch(expenseControllerProvider);
-    final currentCurrency = ref.watch(currencyControllerProvider);
+    final currentCurrency = ref.watch(currencyControllerProvider).selectedCurrency;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 

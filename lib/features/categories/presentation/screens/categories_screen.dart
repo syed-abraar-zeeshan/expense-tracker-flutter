@@ -47,7 +47,7 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
   Widget build(BuildContext context) {
     final categoriesState = ref.watch(categoriesControllerProvider);
     final dashboardState = ref.watch(dashboardControllerProvider);
-    final currentCurrency = ref.watch(currencyControllerProvider);
+    final currentCurrency = ref.watch(currencyControllerProvider).selectedCurrency;
     final theme = Theme.of(context);
 
     final categories = categoriesState.categories;

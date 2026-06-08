@@ -21,7 +21,8 @@ class ProfileScreen extends ConsumerWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (context) {
-        final currentCurrency = ref.watch(currencyControllerProvider);
+        final currencyState = ref.watch(currencyControllerProvider);
+        final currentCurrency = currencyState.selectedCurrency;
         return SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(AppDimensions.lg),
@@ -40,37 +41,55 @@ class ProfileScreen extends ConsumerWidget {
                   ),
                 ),
                 const Gap(AppDimensions.xl),
-                Text(
-                  'Select Currency',
-                  style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Select Currency',
+                      style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+                    ),
+                    if (currencyState.isSyncing)
+                      const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                  ],
                 ),
                 const Gap(AppDimensions.md),
-                ...availableCurrencies.map((currency) {
-                  final isSelected = currency.code == currentCurrency.code;
-                  return ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: Container(
-                      width: 48,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color: isSelected ? AppColors.primary.withValues(alpha: 0.1) : theme.colorScheme.surface,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: isSelected ? AppColors.primary : theme.dividerColor.withValues(alpha: 0.05),
+                Expanded(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: currencyState.availableCurrencies.length,
+                    itemBuilder: (context, index) {
+                      final currency = currencyState.availableCurrencies[index];
+                      final isSelected = currency.code == currentCurrency.code;
+                      return ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: Container(
+                          width: 48,
+                          height: 48,
+                          decoration: BoxDecoration(
+                            color: isSelected ? AppColors.primary.withValues(alpha: 0.1) : theme.colorScheme.surface,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: isSelected ? AppColors.primary : theme.dividerColor.withValues(alpha: 0.05),
+                            ),
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(currency.symbol, style: theme.textTheme.titleLarge?.copyWith(color: isSelected ? AppColors.primary : null)),
                         ),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(currency.symbol, style: theme.textTheme.titleLarge?.copyWith(color: isSelected ? AppColors.primary : null)),
-                    ),
-                    title: Text(currency.name, style: theme.textTheme.bodyLarge?.copyWith(fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400)),
-                    subtitle: Text(currency.code, style: theme.textTheme.bodySmall),
-                    trailing: isSelected ? const Icon(Icons.check_circle_rounded, color: AppColors.primary) : null,
-                    onTap: () {
-                      ref.read(currencyControllerProvider.notifier).setCurrency(currency);
-                      Navigator.pop(context);
+                        title: Text(currency.name, style: theme.textTheme.bodyLarge?.copyWith(fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400)),
+                        subtitle: Text(currency.code, style: theme.textTheme.bodySmall),
+                        trailing: isSelected ? const Icon(Icons.check_circle_rounded, color: AppColors.primary) : null,
+                        onTap: () {
+                          ref.read(currencyControllerProvider.notifier).setCurrency(currency);
+                          Navigator.pop(context);
+                        },
+                      );
                     },
-                  );
-                }),
+                  ),
+                ),
               ],
             ),
           ),
@@ -82,7 +101,8 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authControllerProvider);
-    final currentCurrency = ref.watch(currencyControllerProvider);
+    final currencyState = ref.watch(currencyControllerProvider);
+    final currentCurrency = currencyState.selectedCurrency;
     final user = authState.user;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
