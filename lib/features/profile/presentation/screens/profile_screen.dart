@@ -101,10 +101,6 @@ class ProfileScreen extends ConsumerWidget {
               background: _buildHeaderCard(context, user, theme),
               stretchModes: const [StretchMode.zoomBackground],
             ),
-            leading: IconButton(
-              onPressed: () => context.pop(),
-              icon: const Icon(Icons.arrow_back_ios_new_rounded),
-            ),
             actions: [
               IconButton(
                 onPressed: () {},

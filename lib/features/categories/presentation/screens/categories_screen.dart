@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
 
 class CategoriesScreen extends ConsumerStatefulWidget {
   const CategoriesScreen({super.key});
@@ -21,6 +20,7 @@ class CategoriesScreen extends ConsumerStatefulWidget {
 
 class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
   int _touchedIndex = -1;
+  String _selectedType = 'expense';
 
   @override
   void initState() {
@@ -54,14 +54,14 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
     final transactions = dashboardState.dashboard?.recentTransactions ?? [];
 
     // Calculate stats
-    double totalExpenses = 0;
+    double totalAmount = 0;
     Map<String, double> categorySpending = {};
     Map<String, int> categoryCounts = {};
 
     for (final tx in transactions) {
-      if (tx.type.toLowerCase() == 'expense') {
+      if (tx.type.toLowerCase() == _selectedType) {
         final amount = tx.amount.abs();
-        totalExpenses += amount;
+        totalAmount += amount;
         categorySpending[tx.category.id] =
             (categorySpending[tx.category.id] ?? 0) + amount;
         categoryCounts[tx.category.id] =
@@ -87,10 +87,6 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
       appBar: AppBar(
         backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
-          onPressed: () => context.pop(),
-        ),
         title: Text(
           'Categories',
           style: theme.textTheme.titleLarge?.copyWith(
@@ -117,21 +113,63 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
                   children: [
                     const Gap(AppDimensions.md),
 
+                    // Type Toggle
+                    Center(
+                      child: SegmentedButton<String>(
+                        segments: const [
+                          ButtonSegment<String>(
+                            value: 'expense',
+                            label: Text('Expenses'),
+                            icon: Icon(Icons.remove_circle_outline),
+                          ),
+                          ButtonSegment<String>(
+                            value: 'income',
+                            label: Text('Income'),
+                            icon: Icon(Icons.add_circle_outline),
+                          ),
+                        ],
+                        selected: {_selectedType},
+                        onSelectionChanged: (Set<String> newSelection) {
+                          setState(() {
+                            _selectedType = newSelection.first;
+                            _touchedIndex = -1;
+                          });
+                        },
+                        style: SegmentedButton.styleFrom(
+                          backgroundColor: theme.colorScheme.surface,
+                          selectedBackgroundColor: _selectedType == 'expense'
+                              ? AppColors.error.withValues(alpha: 0.1)
+                              : AppColors.success.withValues(alpha: 0.1),
+                          selectedForegroundColor: _selectedType == 'expense'
+                              ? AppColors.error
+                              : AppColors.success,
+                          side: BorderSide(
+                            color: theme.dividerColor.withValues(alpha: 0.1),
+                          ),
+                        ),
+                      ),
+                    ).animate().fadeIn().slideY(begin: -0.1),
+
+                    const Gap(AppDimensions.lg),
+
                     // 1. Overview
                     _buildOverviewCard(
-                      totalExpenses,
+                      totalAmount,
                       mostUsed,
                       theme,
                       currentCurrency.symbol,
                       currentCurrency.conversionRate,
+                      _selectedType,
                     ),
 
                     const Gap(AppDimensions.xl),
 
                     // 2. Chart
-                    if (totalExpenses > 0) ...[
+                    if (totalAmount > 0) ...[
                       Text(
-                        'Spending Distribution',
+                        _selectedType == 'expense' 
+                          ? 'Spending Distribution'
+                          : 'Income Distribution',
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.w700,
                         ),
@@ -140,7 +178,7 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
                       _buildChartSection(
                         sortedCategories,
                         categorySpending,
-                        totalExpenses,
+                        totalAmount,
                         theme,
                       ),
                       const Gap(AppDimensions.xl),
@@ -173,8 +211,8 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
                         final category = categories[index];
                         final spent = categorySpending[category.id] ?? 0;
                         final count = categoryCounts[category.id] ?? 0;
-                        final percentage = totalExpenses > 0
-                            ? (spent / totalExpenses) * 100
+                        final percentage = totalAmount > 0
+                            ? (spent / totalAmount) * 100
                             : 0;
 
                         return _buildCategoryCard(
@@ -199,12 +237,15 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
   }
 
   Widget _buildOverviewCard(
-    double totalExpenses,
+    double totalAmount,
     CategoryEntity? mostUsed,
     ThemeData theme,
     String symbol,
     double conversionRate,
+    String selectedType,
   ) {
+    final isExpense = selectedType == 'expense';
+
     return Container(
       padding: const EdgeInsets.all(AppDimensions.lg),
       decoration: BoxDecoration(
@@ -225,17 +266,20 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Total Expenses', style: theme.textTheme.bodySmall),
+              Text(
+                isExpense ? 'Total Expenses' : 'Total Income',
+                style: theme.textTheme.bodySmall,
+              ),
               const Gap(4),
               Text(
                 AppCurrencyFormatter.format(
-                  totalExpenses,
+                  totalAmount,
                   symbol: symbol,
                   conversionRate: conversionRate,
                 ),
                 style: theme.textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.w700,
-                  color: AppColors.error,
+                  color: isExpense ? AppColors.error : AppColors.success,
                 ),
               ),
             ],
@@ -280,7 +324,7 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
   Widget _buildChartSection(
     List<CategoryEntity> sortedCategories,
     Map<String, double> categorySpending,
-    double totalExpenses,
+    double totalAmount,
     ThemeData theme,
   ) {
     return Container(
@@ -318,7 +362,7 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
                   final radius = isTouched ? 35.0 : 30.0;
                   final category = sortedCategories[i];
                   final value = categorySpending[category.id] ?? 0;
-                  final percentage = (value / totalExpenses) * 100;
+                  final percentage = (value / totalAmount) * 100;
                   final color = _parseColor(category.color);
 
                   return PieChartSectionData(
@@ -361,7 +405,7 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
             children: sortedCategories.map((c) {
               final color = _parseColor(c.color);
               final percentage =
-                  ((categorySpending[c.id] ?? 0) / totalExpenses) * 100;
+                  ((categorySpending[c.id] ?? 0) / totalAmount) * 100;
               return Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
