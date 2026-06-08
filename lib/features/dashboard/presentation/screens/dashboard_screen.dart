@@ -1,5 +1,4 @@
 import 'package:expense_flow/core/theme/app_dimensions.dart';
-import 'package:expense_flow/core/widgets/floating_bottom_nav_bar.dart';
 import 'package:expense_flow/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:expense_flow/features/settings/presentation/controllers/currency_controller.dart';
 import 'package:expense_flow/features/dashboard/presentation/controllers/dashboard_controller.dart';
@@ -22,8 +21,6 @@ class DashboardScreen extends ConsumerStatefulWidget {
 }
 
 class _DashboardScreenState extends ConsumerState<DashboardScreen> {
-  int _selectedIndex = 0;
-
   @override
   void initState() {
     super.initState();
@@ -116,57 +113,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: FloatingBottomNavBar(
-        selectedIndex: _selectedIndex,
-        onItemSelected: (index) {
-          if (_selectedIndex == index) return;
-          setState(() => _selectedIndex = index);
-          if (index == 1) context.push('/expenses');
-          if (index == 2) context.push('/categories');
-          if (index == 3) context.push('/profile');
-        },
-        items: const [
-          FloatingBottomNavItem(
-            activeIcon: Icons.home_rounded,
-            inactiveIcon: Icons.home_outlined,
-            label: 'Home',
-          ),
-          FloatingBottomNavItem(
-            activeIcon: Icons.receipt_long_rounded,
-            inactiveIcon: Icons.receipt_long_outlined,
-            label: 'Expenses',
-          ),
-          FloatingBottomNavItem(
-            activeIcon: Icons.pie_chart_rounded,
-            inactiveIcon: Icons.pie_chart_outline_rounded,
-            label: 'Categories',
-          ),
-          FloatingBottomNavItem(
-            activeIcon: Icons.person_rounded,
-            inactiveIcon: Icons.person_outline_rounded,
-            label: 'Profile',
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => context.push('/add-expense'),
-        elevation: 8,
-        shape: const CircleBorder(),
-        child: Container(
-          width: 60,
-          height: 60,
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: LinearGradient(
-              colors: [Color(0xFF5D5FEF), Color(0xFF7000FF)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-          child: const Icon(Icons.add, color: Colors.white, size: 32),
-        ),
-      ).animate().scale(delay: 400.ms, curve: Curves.easeOutBack),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }

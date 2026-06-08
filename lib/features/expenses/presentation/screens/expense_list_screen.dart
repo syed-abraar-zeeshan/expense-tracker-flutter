@@ -59,10 +59,6 @@ class _ExpenseListScreenState extends ConsumerState<ExpenseListScreen> {
       appBar: AppBar(
         backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
-          onPressed: () => context.pop(),
-        ),
         title: Text(
           'Transactions',
           style: theme.textTheme.titleLarge?.copyWith(
