@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AuthState {
 
- bool get isLoading; bool get isAuthenticated; bool get isRegistered; UserEntity? get user; String? get errorMessage;
+ bool get isLoading; bool get isAuthenticated; bool get isRegistered; bool get isPasswordResetSent; bool get isPasswordResetSuccess; UserEntity? get user; String? get errorMessage;
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $AuthStateCopyWith<AuthState> get copyWith => _$AuthStateCopyWithImpl<AuthState>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isAuthenticated, isAuthenticated) || other.isAuthenticated == isAuthenticated)&&(identical(other.isRegistered, isRegistered) || other.isRegistered == isRegistered)&&(identical(other.user, user) || other.user == user)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isAuthenticated, isAuthenticated) || other.isAuthenticated == isAuthenticated)&&(identical(other.isRegistered, isRegistered) || other.isRegistered == isRegistered)&&(identical(other.isPasswordResetSent, isPasswordResetSent) || other.isPasswordResetSent == isPasswordResetSent)&&(identical(other.isPasswordResetSuccess, isPasswordResetSuccess) || other.isPasswordResetSuccess == isPasswordResetSuccess)&&(identical(other.user, user) || other.user == user)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,isAuthenticated,isRegistered,user,errorMessage);
+int get hashCode => Object.hash(runtimeType,isLoading,isAuthenticated,isRegistered,isPasswordResetSent,isPasswordResetSuccess,user,errorMessage);
 
 @override
 String toString() {
-  return 'AuthState(isLoading: $isLoading, isAuthenticated: $isAuthenticated, isRegistered: $isRegistered, user: $user, errorMessage: $errorMessage)';
+  return 'AuthState(isLoading: $isLoading, isAuthenticated: $isAuthenticated, isRegistered: $isRegistered, isPasswordResetSent: $isPasswordResetSent, isPasswordResetSuccess: $isPasswordResetSuccess, user: $user, errorMessage: $errorMessage)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $AuthStateCopyWith<$Res>  {
   factory $AuthStateCopyWith(AuthState value, $Res Function(AuthState) _then) = _$AuthStateCopyWithImpl;
 @useResult
 $Res call({
- bool isLoading, bool isAuthenticated, bool isRegistered, UserEntity? user, String? errorMessage
+ bool isLoading, bool isAuthenticated, bool isRegistered, bool isPasswordResetSent, bool isPasswordResetSuccess, UserEntity? user, String? errorMessage
 });
 
 
@@ -62,11 +62,13 @@ class _$AuthStateCopyWithImpl<$Res>
 
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? isAuthenticated = null,Object? isRegistered = null,Object? user = freezed,Object? errorMessage = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? isAuthenticated = null,Object? isRegistered = null,Object? isPasswordResetSent = null,Object? isPasswordResetSuccess = null,Object? user = freezed,Object? errorMessage = freezed,}) {
   return _then(_self.copyWith(
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,isAuthenticated: null == isAuthenticated ? _self.isAuthenticated : isAuthenticated // ignore: cast_nullable_to_non_nullable
 as bool,isRegistered: null == isRegistered ? _self.isRegistered : isRegistered // ignore: cast_nullable_to_non_nullable
+as bool,isPasswordResetSent: null == isPasswordResetSent ? _self.isPasswordResetSent : isPasswordResetSent // ignore: cast_nullable_to_non_nullable
+as bool,isPasswordResetSuccess: null == isPasswordResetSuccess ? _self.isPasswordResetSuccess : isPasswordResetSuccess // ignore: cast_nullable_to_non_nullable
 as bool,user: freezed == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as UserEntity?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,
@@ -154,10 +156,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoading,  bool isAuthenticated,  bool isRegistered,  UserEntity? user,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoading,  bool isAuthenticated,  bool isRegistered,  bool isPasswordResetSent,  bool isPasswordResetSuccess,  UserEntity? user,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AuthState() when $default != null:
-return $default(_that.isLoading,_that.isAuthenticated,_that.isRegistered,_that.user,_that.errorMessage);case _:
+return $default(_that.isLoading,_that.isAuthenticated,_that.isRegistered,_that.isPasswordResetSent,_that.isPasswordResetSuccess,_that.user,_that.errorMessage);case _:
   return orElse();
 
 }
@@ -175,10 +177,10 @@ return $default(_that.isLoading,_that.isAuthenticated,_that.isRegistered,_that.u
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoading,  bool isAuthenticated,  bool isRegistered,  UserEntity? user,  String? errorMessage)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoading,  bool isAuthenticated,  bool isRegistered,  bool isPasswordResetSent,  bool isPasswordResetSuccess,  UserEntity? user,  String? errorMessage)  $default,) {final _that = this;
 switch (_that) {
 case _AuthState():
-return $default(_that.isLoading,_that.isAuthenticated,_that.isRegistered,_that.user,_that.errorMessage);case _:
+return $default(_that.isLoading,_that.isAuthenticated,_that.isRegistered,_that.isPasswordResetSent,_that.isPasswordResetSuccess,_that.user,_that.errorMessage);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -195,10 +197,10 @@ return $default(_that.isLoading,_that.isAuthenticated,_that.isRegistered,_that.u
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoading,  bool isAuthenticated,  bool isRegistered,  UserEntity? user,  String? errorMessage)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoading,  bool isAuthenticated,  bool isRegistered,  bool isPasswordResetSent,  bool isPasswordResetSuccess,  UserEntity? user,  String? errorMessage)?  $default,) {final _that = this;
 switch (_that) {
 case _AuthState() when $default != null:
-return $default(_that.isLoading,_that.isAuthenticated,_that.isRegistered,_that.user,_that.errorMessage);case _:
+return $default(_that.isLoading,_that.isAuthenticated,_that.isRegistered,_that.isPasswordResetSent,_that.isPasswordResetSuccess,_that.user,_that.errorMessage);case _:
   return null;
 
 }
@@ -210,12 +212,14 @@ return $default(_that.isLoading,_that.isAuthenticated,_that.isRegistered,_that.u
 
 
 class _AuthState implements AuthState {
-  const _AuthState({this.isLoading = false, this.isAuthenticated = false, this.isRegistered = false, this.user, this.errorMessage});
+  const _AuthState({this.isLoading = false, this.isAuthenticated = false, this.isRegistered = false, this.isPasswordResetSent = false, this.isPasswordResetSuccess = false, this.user, this.errorMessage});
   
 
 @override@JsonKey() final  bool isLoading;
 @override@JsonKey() final  bool isAuthenticated;
 @override@JsonKey() final  bool isRegistered;
+@override@JsonKey() final  bool isPasswordResetSent;
+@override@JsonKey() final  bool isPasswordResetSuccess;
 @override final  UserEntity? user;
 @override final  String? errorMessage;
 
@@ -229,16 +233,16 @@ _$AuthStateCopyWith<_AuthState> get copyWith => __$AuthStateCopyWithImpl<_AuthSt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isAuthenticated, isAuthenticated) || other.isAuthenticated == isAuthenticated)&&(identical(other.isRegistered, isRegistered) || other.isRegistered == isRegistered)&&(identical(other.user, user) || other.user == user)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isAuthenticated, isAuthenticated) || other.isAuthenticated == isAuthenticated)&&(identical(other.isRegistered, isRegistered) || other.isRegistered == isRegistered)&&(identical(other.isPasswordResetSent, isPasswordResetSent) || other.isPasswordResetSent == isPasswordResetSent)&&(identical(other.isPasswordResetSuccess, isPasswordResetSuccess) || other.isPasswordResetSuccess == isPasswordResetSuccess)&&(identical(other.user, user) || other.user == user)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,isAuthenticated,isRegistered,user,errorMessage);
+int get hashCode => Object.hash(runtimeType,isLoading,isAuthenticated,isRegistered,isPasswordResetSent,isPasswordResetSuccess,user,errorMessage);
 
 @override
 String toString() {
-  return 'AuthState(isLoading: $isLoading, isAuthenticated: $isAuthenticated, isRegistered: $isRegistered, user: $user, errorMessage: $errorMessage)';
+  return 'AuthState(isLoading: $isLoading, isAuthenticated: $isAuthenticated, isRegistered: $isRegistered, isPasswordResetSent: $isPasswordResetSent, isPasswordResetSuccess: $isPasswordResetSuccess, user: $user, errorMessage: $errorMessage)';
 }
 
 
@@ -249,7 +253,7 @@ abstract mixin class _$AuthStateCopyWith<$Res> implements $AuthStateCopyWith<$Re
   factory _$AuthStateCopyWith(_AuthState value, $Res Function(_AuthState) _then) = __$AuthStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool isLoading, bool isAuthenticated, bool isRegistered, UserEntity? user, String? errorMessage
+ bool isLoading, bool isAuthenticated, bool isRegistered, bool isPasswordResetSent, bool isPasswordResetSuccess, UserEntity? user, String? errorMessage
 });
 
 
@@ -266,11 +270,13 @@ class __$AuthStateCopyWithImpl<$Res>
 
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? isLoading = null,Object? isAuthenticated = null,Object? isRegistered = null,Object? user = freezed,Object? errorMessage = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? isLoading = null,Object? isAuthenticated = null,Object? isRegistered = null,Object? isPasswordResetSent = null,Object? isPasswordResetSuccess = null,Object? user = freezed,Object? errorMessage = freezed,}) {
   return _then(_AuthState(
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,isAuthenticated: null == isAuthenticated ? _self.isAuthenticated : isAuthenticated // ignore: cast_nullable_to_non_nullable
 as bool,isRegistered: null == isRegistered ? _self.isRegistered : isRegistered // ignore: cast_nullable_to_non_nullable
+as bool,isPasswordResetSent: null == isPasswordResetSent ? _self.isPasswordResetSent : isPasswordResetSent // ignore: cast_nullable_to_non_nullable
+as bool,isPasswordResetSuccess: null == isPasswordResetSuccess ? _self.isPasswordResetSuccess : isPasswordResetSuccess // ignore: cast_nullable_to_non_nullable
 as bool,user: freezed == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as UserEntity?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,

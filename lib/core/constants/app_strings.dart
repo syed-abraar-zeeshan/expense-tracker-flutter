@@ -11,6 +11,16 @@ class AppStrings {
   static const password = 'Password';
   static const confirmPassword = 'Confirm Password';
   static const forgotPassword = 'Forgot Password?';
+  static const resetPassword = 'Reset Password';
+  static const newPassword = 'New Password';
+  static const confirmNewPassword = 'Confirm New Password';
+  static const enterNewPassword = 'Enter your new password';
+  static const passwordResetSuccess = 'Password reset successfully!';
+  static const sendResetLink = 'Send Reset Link';
+  static const checkYourEmail = 'Check Your Email';
+  static const backToLogin = 'Back to Login';
+  static const resetLinkDescription = 'Enter your email address and we will send you a link to reset your password.';
+  static const resetLinkSentTo = 'We have sent a password reset link to';
   static const dontHaveAccount = "Don't have an account?";
   static const fullName = 'Full Name';
   static const enterEmail = 'Enter your email';

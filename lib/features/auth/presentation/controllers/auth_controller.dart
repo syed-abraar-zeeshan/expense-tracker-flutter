@@ -42,6 +42,40 @@ class AuthController extends _$AuthController {
     }
   }
 
+  Future<void> forgotPassword({required String email}) async {
+    state = state.copyWith(isLoading: true, errorMessage: null, isPasswordResetSent: false);
+    try {
+      final repository = ref.read(authRepositoryProvider);
+      await repository.forgotPassword(email: email);
+      state = state.copyWith(isLoading: false, isPasswordResetSent: true);
+    } catch (e) {
+      state = state.copyWith(isLoading: false, errorMessage: e.toString());
+    }
+  }
+
+  Future<void> resetPassword({
+    required String email,
+    required String password,
+    required String token,
+  }) async {
+    state = state.copyWith(
+      isLoading: true,
+      errorMessage: null,
+      isPasswordResetSuccess: false,
+    );
+    try {
+      final repository = ref.read(authRepositoryProvider);
+      await repository.resetPassword(
+        email: email,
+        password: password,
+        token: token,
+      );
+      state = state.copyWith(isLoading: false, isPasswordResetSuccess: true);
+    } catch (e) {
+      state = state.copyWith(isLoading: false, errorMessage: e.toString());
+    }
+  }
+
   Future<void> getProfile() async {
     try {
       final repository = ref.read(authRepositoryProvider);

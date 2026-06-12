@@ -2,52 +2,55 @@ import 'package:expense_flow/core/constants/app_strings.dart';
 import 'package:expense_flow/core/theme/app_dimensions.dart';
 import 'package:expense_flow/core/utils/app_validators.dart';
 import 'package:expense_flow/core/widgets/app_button.dart';
+import 'package:expense_flow/core/widgets/app_snackbar.dart';
 import 'package:expense_flow/core/widgets/app_text_field.dart';
+import 'package:expense_flow/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:expense_flow/features/auth/presentation/forms/forgot_password_form_controller.dart';
 import 'package:expense_flow/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
-class ForgotPasswordScreen extends StatefulWidget {
+class ForgotPasswordScreen extends ConsumerStatefulWidget {
   const ForgotPasswordScreen({super.key});
 
   @override
-  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
+  ConsumerState<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
 }
 
-class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
-  final _emailController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
-  bool _isSuccess = false;
-  bool _isLoading = false;
+class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
+  late final ForgotPasswordFormController formController;
+
+  @override
+  void initState() {
+    super.initState();
+    formController = ForgotPasswordFormController();
+  }
 
   @override
   void dispose() {
-    _emailController.dispose();
+    formController.dispose();
     super.dispose();
-  }
-
-  void _handleResetPassword() async {
-    if (_formKey.currentState?.validate() ?? false) {
-      setState(() => _isLoading = true);
-      
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
-      
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-          _isSuccess = true;
-        });
-      }
-    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final authState = ref.watch(authControllerProvider);
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+
+    ref.listen(authControllerProvider, (previous, next) {
+      if (next.errorMessage != null) {
+        AppSnackbar.show(
+          context,
+          message: next.errorMessage!,
+          type: SnackbarType.error,
+        );
+        ref.read(authControllerProvider.notifier).clearError();
+      }
+    });
 
     return Scaffold(
       appBar: AppBar(
@@ -80,9 +83,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           ).animate().fadeIn(duration: 1000.ms).scale(),
 
           SafeArea(
-            child: Padding(
+            child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: AppDimensions.lg),
-              child: _isSuccess ? _buildSuccessUI(theme) : _buildFormUI(theme),
+              child: authState.isPasswordResetSent 
+                  ? _buildSuccessUI(theme) 
+                  : _buildFormUI(theme, authState),
             ),
           ),
         ],
@@ -90,22 +95,22 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     );
   }
 
-  Widget _buildFormUI(ThemeData theme) {
+  Widget _buildFormUI(ThemeData theme, dynamic authState) {
     return Form(
-      key: _formKey,
+      key: formController.formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Gap(AppDimensions.md),
           Text(
-            'Reset Password',
+            AppStrings.resetPassword,
             style: theme.textTheme.displaySmall,
           ).animate().fadeIn(delay: 200.ms).slideX(begin: -0.2),
           
           const Gap(AppDimensions.xs),
           
           Text(
-            'Enter your email address and we will send you a link to reset your password.',
+            AppStrings.resetLinkDescription,
             style: theme.textTheme.bodyLarge?.copyWith(
               color: theme.textTheme.bodySmall?.color,
             ),
@@ -114,7 +119,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           const Gap(AppDimensions.massive),
           
           AppTextField(
-            controller: _emailController,
+            controller: formController.emailController,
             labelText: AppStrings.email,
             hintText: AppStrings.enterEmail,
             keyboardType: TextInputType.emailAddress,
@@ -125,9 +130,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           const Gap(AppDimensions.xxl),
           
           AppButton(
-            text: 'Send Reset Link',
-            isLoading: _isLoading,
-            onPressed: _handleResetPassword,
+            text: AppStrings.sendResetLink,
+            isLoading: authState.isLoading,
+            onPressed: () {
+              if (formController.validate()) {
+                ref.read(authControllerProvider.notifier).forgotPassword(
+                  email: formController.emailController.text.trim(),
+                );
+              }
+            },
           ).animate().fadeIn(delay: 500.ms).scale(),
         ],
       ),
@@ -138,30 +149,33 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Container(
-          padding: const EdgeInsets.all(AppDimensions.xl),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: AppColors.success.withValues(alpha: 0.1),
-          ),
-          child: const Icon(
-            Icons.mark_email_read_rounded,
-            size: 80,
-            color: AppColors.success,
-          ),
-        ).animate().scale(curve: Curves.easeOutBack),
+        const Gap(AppDimensions.massive),
+        Center(
+          child: Container(
+            padding: const EdgeInsets.all(AppDimensions.xl),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppColors.success.withValues(alpha: 0.1),
+            ),
+            child: const Icon(
+              Icons.mark_email_read_rounded,
+              size: 80,
+              color: AppColors.success,
+            ),
+          ).animate().scale(curve: Curves.easeOutBack),
+        ),
         
         const Gap(AppDimensions.xl),
         
         Text(
-          'Check Your Email',
+          AppStrings.checkYourEmail,
           style: theme.textTheme.headlineMedium,
         ).animate().fadeIn(delay: 200.ms),
         
         const Gap(AppDimensions.md),
         
         Text(
-          'We have sent a password reset link to\n${_emailController.text}',
+          '${AppStrings.resetLinkSentTo}\n${formController.emailController.text}',
           textAlign: TextAlign.center,
           style: theme.textTheme.bodyLarge?.copyWith(
             color: theme.textTheme.bodySmall?.color,
@@ -171,7 +185,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         const Gap(AppDimensions.massive),
         
         AppButton(
-          text: 'Back to Login',
+          text: AppStrings.backToLogin,
           useGradient: false,
           backgroundColor: theme.colorScheme.surface,
           foregroundColor: theme.colorScheme.onSurface,

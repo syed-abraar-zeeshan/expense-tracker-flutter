@@ -8,5 +8,11 @@ abstract class AuthRepository {
     required String password,
   });
   Future<UserEntity> getProfile();
+  Future<void> forgotPassword({required String email});
+  Future<void> resetPassword({
+    required String email,
+    required String password,
+    required String token,
+  });
   Future<void> logout();
 }

@@ -41,4 +41,28 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
 
     return UserModel.fromJson(response.data['data']);
   }
+
+  @override
+  Future<void> forgotPassword({required String email}) async {
+    await apiService.post(
+      ApiConstants.forgotPassword,
+      data: {'email': email},
+    );
+  }
+
+  @override
+  Future<void> resetPassword({
+    required String email,
+    required String password,
+    required String token,
+  }) async {
+    await apiService.post(
+      ApiConstants.resetPassword,
+      data: {
+        'email': email,
+        'password': password,
+        'token': token,
+      },
+    );
+  }
 }
