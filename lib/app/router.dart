@@ -1,4 +1,5 @@
 import 'package:expense_flow/core/widgets/main_navigation_wrapper.dart';
+import 'package:expense_flow/features/auth/presentation/screens/reset_password_screen.dart';
 import 'package:expense_flow/features/auth/presentation/screens/splash_screen.dart';
 import 'package:expense_flow/features/dashboard/domain/enities/transaction_entity.dart';
 import 'package:expense_flow/features/expenses/presentation/screens/edit_expense_screen.dart';
@@ -28,6 +29,14 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/forgot-password',
       builder: (context, state) => const ForgotPasswordScreen(),
+    ),
+    GoRoute(
+      path: '/reset-password',
+      builder: (context, state) {
+        final email = state.uri.queryParameters['email'] ?? '';
+        final token = state.uri.queryParameters['token'] ?? '';
+        return ResetPasswordScreen(email: email, token: token);
+      },
     ),
     
     // Persistent Navigation Shell

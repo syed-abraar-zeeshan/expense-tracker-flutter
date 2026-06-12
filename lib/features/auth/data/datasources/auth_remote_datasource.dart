@@ -8,4 +8,10 @@ abstract class AuthRemoteDatasource {
     required String password,
   });
   Future<UserModel> getProfile();
+  Future<void> forgotPassword({required String email});
+  Future<void> resetPassword({
+    required String email,
+    required String password,
+    required String token,
+  });
 }

@@ -42,7 +42,7 @@ final class CurrencyControllerProvider
 }
 
 String _$currencyControllerHash() =>
-    r'bdfcb8f388302fe18a70fa6f18f15fcc5ca5cfab';
+    r'da3e13ad6f5a18c5f9041215694db4d2d4cb3bbc';
 
 abstract class _$CurrencyController extends $Notifier<CurrencyState> {
   CurrencyState build();

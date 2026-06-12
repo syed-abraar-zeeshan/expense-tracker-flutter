@@ -9,6 +9,8 @@ abstract class AuthState with _$AuthState {
     @Default(false) bool isLoading,
     @Default(false) bool isAuthenticated,
     @Default(false) bool isRegistered,
+    @Default(false) bool isPasswordResetSent,
+    @Default(false) bool isPasswordResetSuccess,
     UserEntity? user,
     String? errorMessage,
   }) = _AuthState;
