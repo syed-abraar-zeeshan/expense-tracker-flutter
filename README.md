@@ -128,45 +128,29 @@ lib/
 
 # Screenshots
 
-## Login Screen
+## Login
 
 ![Login](screenshots/login.png)
-
----
-
-## Register Screen
-
-![Register](screenshots/register.png)
-
----
 
 ## Dashboard
 
 ![Dashboard](screenshots/dashboard.png)
 
----
+## Transactions
+
+![Transactions](screenshots/expense.png)
 
 ## Categories
 
 ![Categories](screenshots/categories.png)
 
----
+## Add Transaction
 
-## Add Expense
-
-![Add Expense](screenshots/add_expense.png)
-
----
+![Add Transaction](screenshots/new_transaction.png)
 
 ## Profile
 
 ![Profile](screenshots/profile.png)
-
----
-
-# Demo
-
-![Demo](screenshots/demo.gif)
 
 ---
 
