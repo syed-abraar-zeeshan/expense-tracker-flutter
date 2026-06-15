@@ -128,69 +128,39 @@ lib/
 ## 📸 Application Screenshots
 
 <table>
-<tr>
-<td align="center">
-<b>Dashboard</b><br>
-<img src="screenshots/dashboard.png" width="250"/>
-</td>
+  <tr>
+    <td align="center">
+      <b>Dashboard</b><br>
+      <img src="screenshots/dashboard.png" width="220"/>
+    </td>
+    <td align="center">
+      <b>Transactions</b><br>
+      <img src="screenshots/expense.png" width="220"/>
+    </td>
+  </tr>
 
-<td align="center">
-<b>Transactions</b><br>
-<img src="screenshots/expense.png" width="250"/>
-</td>
-</tr>
+  <tr>
+    <td align="center">
+      <b>Categories</b><br>
+      <img src="screenshots/categories.png" width="220"/>
+    </td>
+    <td align="center">
+      <b>Add Transaction</b><br>
+      <img src="screenshots/new_transaction.png" width="220"/>
+    </td>
+  </tr>
 
-<tr>
-<td align="center">
-<b>Categories Analytics</b><br>
-<img src="screenshots/categories.png" width="250"/>
-</td>
-
-<td align="center">
-<b>Add Transaction</b><br>
-<img src="screenshots/new_transaction.png" width="250"/>
-</td>
-</tr>
-
-<tr>
-<td align="center">
-<b>Profile</b><br>
-<img src="screenshots/profile.png" width="250"/>
-</td>
-
-<td align="center">
-<b>Authentication</b><br>
-<img src="screenshots/login.png" width="250"/>
-</td>
-</tr>
+  <tr>
+    <td align="center">
+      <b>Profile</b><br>
+      <img src="screenshots/profile.png" width="220"/>
+    </td>
+    <td align="center">
+      <b>Authentication</b><br>
+      <img src="screenshots/login.png" width="220"/>
+    </td>
+  </tr>
 </table>
-# Screenshots
-
-## Login
-
-![Login](screenshots/login.png)
-
-## Dashboard
-
-![Dashboard](screenshots/dashboard.png)
-
-## Transactions
-
-![Transactions](screenshots/expense.png)
-
-## Categories
-
-![Categories](screenshots/categories.png)
-
-## Add Transaction
-
-![Add Transaction](screenshots/new_transaction.png)
-
-## Profile
-
-![Profile](screenshots/profile.png)
-
----
 
 # Backend Repository
 
