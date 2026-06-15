@@ -125,7 +125,45 @@ lib/
 ```
 
 ---
+## 📸 Application Screenshots
 
+<table>
+<tr>
+<td align="center">
+<b>Dashboard</b><br>
+<img src="screenshots/dashboard.png" width="250"/>
+</td>
+
+<td align="center">
+<b>Transactions</b><br>
+<img src="screenshots/expense.png" width="250"/>
+</td>
+</tr>
+
+<tr>
+<td align="center">
+<b>Categories Analytics</b><br>
+<img src="screenshots/categories.png" width="250"/>
+</td>
+
+<td align="center">
+<b>Add Transaction</b><br>
+<img src="screenshots/new_transaction.png" width="250"/>
+</td>
+</tr>
+
+<tr>
+<td align="center">
+<b>Profile</b><br>
+<img src="screenshots/profile.png" width="250"/>
+</td>
+
+<td align="center">
+<b>Authentication</b><br>
+<img src="screenshots/login.png" width="250"/>
+</td>
+</tr>
+</table>
 # Screenshots
 
 ## Login
