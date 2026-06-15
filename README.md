@@ -43,12 +43,20 @@ The application provides secure JWT authentication, expense tracking, category m
 
 ## 📸 Application Screenshots
 
-<p align="center">
+<p align="start">
 Modern Expense Tracking Application built with Flutter, Riverpod, Isar and Clean Architecture.
 </p>
 
 <table>
 <tr>
+
+<td align="center">
+<b>💰 Transactions</b><br><br>
+<img src="screenshots/expense.png" width="220"/>
+</td>
+
+<td width="30"></td>
+
 <td align="center">
 <b>📊 Dashboard</b><br><br>
 <img src="screenshots/dashboard.png" width="220"/>
