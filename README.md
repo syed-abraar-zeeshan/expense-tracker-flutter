@@ -125,42 +125,46 @@ lib/
 ```
 
 ---
+---
+
 ## 📸 Application Screenshots
 
 <table>
   <tr>
     <td align="center">
-      <b>Dashboard</b><br>
-      <img src="screenshots/dashboard.png" width="220"/>
+      <b>Dashboard</b><br><br>
+      <img src="screenshots/dashboard.png" width="280"/>
     </td>
     <td align="center">
-      <b>Transactions</b><br>
-      <img src="screenshots/expense.png" width="220"/>
-    </td>
-  </tr>
-
-  <tr>
-    <td align="center">
-      <b>Categories</b><br>
-      <img src="screenshots/categories.png" width="220"/>
-    </td>
-    <td align="center">
-      <b>Add Transaction</b><br>
-      <img src="screenshots/new_transaction.png" width="220"/>
+      <b>Transactions</b><br><br>
+      <img src="screenshots/expense.png" width="280"/>
     </td>
   </tr>
 
   <tr>
     <td align="center">
-      <b>Profile</b><br>
-      <img src="screenshots/profile.png" width="220"/>
+      <b>Categories Analytics</b><br><br>
+      <img src="screenshots/categories.png" width="280"/>
     </td>
     <td align="center">
-      <b>Authentication</b><br>
-      <img src="screenshots/login.png" width="220"/>
+      <b>Add Transaction</b><br><br>
+      <img src="screenshots/new_transaction.png" width="280"/>
+    </td>
+  </tr>
+
+  <tr>
+    <td align="center">
+      <b>Profile</b><br><br>
+      <img src="screenshots/profile.png" width="280"/>
+    </td>
+    <td align="center">
+      <b>Authentication</b><br><br>
+      <img src="screenshots/login.png" width="280"/>
     </td>
   </tr>
 </table>
+
+---
 
 # Backend Repository
 
