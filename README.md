@@ -130,21 +130,21 @@ lib/
 ## 📸 Application Screenshots
 
 <p align="center">
+  <img src="screenshots/login.png" width="220"/>
+  &nbsp;&nbsp;&nbsp;
   <img src="screenshots/dashboard.png" width="220"/>
   &nbsp;&nbsp;&nbsp;
-  <img src="screenshots/expense.png" width="220"/>
-  &nbsp;&nbsp;&nbsp;
-  <img src="screenshots/categories.png" width="220"/>
-  &nbsp;&nbsp;&nbsp;
   <img src="screenshots/new_transaction.png" width="220"/>
+  &nbsp;&nbsp;&nbsp;
+  <img src="screenshots/expense.png" width="220"/>
 </p>
 
 <br>
 
 <p align="center">
-  <img src="screenshots/profile.png" width="220"/>
+  <img src="screenshots/categories.png" width="220"/>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="screenshots/login.png" width="220"/>
+  <img src="screenshots/profile.png" width="220"/>
 </p>
 ---
 
