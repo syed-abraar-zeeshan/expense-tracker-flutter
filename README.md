@@ -43,67 +43,50 @@ The application provides secure JWT authentication, expense tracking, category m
 
 ## 📸 Application Screenshots
 
-<p align="center">
-Modern Expense Tracking Application built with Flutter, Riverpod, Isar and Clean Architecture.
-</p>
-
 <table>
 <tr>
+<td align="center">
+<b>🚀 Splash Screen</b><br><br>
+<img src="screenshots/splash.png" width="280"/>
+</td>
 
 <td align="center">
 <b>🔐 Authentication</b><br><br>
-<img src="screenshots/login.png" width="220"/>
-</td>
-
-<td width="30"></td>
-
-<td align="center">
-<b>📊 Dashboard</b><br><br>
-<img src="screenshots/dashboard.png" width="220"/>
-</td>
-
-<td width="30"></td>
-
-<td align="center">
-<b>💰 Transactions</b><br><br>
-<img src="screenshots/expense.png" width="220"/>
-</td>
-
-<td width="30"></td>
-
-<td align="center">
-<b>💰 Transactions</b><br><br>
-<img src="screenshots/expense.png" width="220"/>
-</td>
-
-<td width="30"></td>
-
-<td align="center">
-<b>📈 Categories Analytics</b><br><br>
-<img src="screenshots/categories.png" width="220"/>
-</td>
-
-<td width="30"></td>
-
-<td align="center">
-<b>➕ Add Transaction</b><br><br>
-<img src="screenshots/new_transaction.png" width="220"/>
+<img src="screenshots/login.png" width="280"/>
 </td>
 </tr>
 
 <tr>
-<td colspan="7"><br></td>
+<td align="center">
+<b>📊 Dashboard</b><br><br>
+<img src="screenshots/dashboard.png" width="280"/>
+</td>
+
+<td align="center">
+<b>💰 Transactions</b><br><br>
+<img src="screenshots/expense.png" width="280"/>
+</td>
+</tr>
+
+<tr>
+<td align="center">
+<b>📈 Categories Analytics</b><br><br>
+<img src="screenshots/categories.png" width="280"/>
+</td>
+
+<td align="center">
+<b>➕ Add Transaction</b><br><br>
+<img src="screenshots/new_transaction.png" width="280"/>
+</td>
 </tr>
 
 <tr>
 <td align="center">
 <b>👤 Profile</b><br><br>
-<img src="screenshots/profile.png" width="220"/>
+<img src="screenshots/profile.png" width="280"/>
 </td>
 
 <td></td>
-
-
 </tr>
 </table>
 
