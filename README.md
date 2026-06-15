@@ -51,8 +51,8 @@ Modern Expense Tracking Application built with Flutter, Riverpod, Isar and Clean
 <tr>
 
 <td align="center">
-<b>💰 Transactions</b><br><br>
-<img src="screenshots/expense.png" width="220"/>
+<b>🔐 Authentication</b><br><br>
+<img src="screenshots/login.png" width="220"/>
 </td>
 
 <td width="30"></td>
@@ -60,6 +60,13 @@ Modern Expense Tracking Application built with Flutter, Riverpod, Isar and Clean
 <td align="center">
 <b>📊 Dashboard</b><br><br>
 <img src="screenshots/dashboard.png" width="220"/>
+</td>
+
+<td width="30"></td>
+
+<td align="center">
+<b>💰 Transactions</b><br><br>
+<img src="screenshots/expense.png" width="220"/>
 </td>
 
 <td width="30"></td>
@@ -96,10 +103,7 @@ Modern Expense Tracking Application built with Flutter, Riverpod, Isar and Clean
 
 <td></td>
 
-<td align="center">
-<b>🔐 Authentication</b><br><br>
-<img src="screenshots/login.png" width="220"/>
-</td>
+
 </tr>
 </table>
 
