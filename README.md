@@ -129,44 +129,23 @@ lib/
 
 ## 📸 Application Screenshots
 
-<table>
-  <!-- Top Row: Core Features -->
-  <tr>
-    <td align="center" width="25%">
-      <b>Dashboard</b><br><br>
-      <img src="screenshots/dashboard.png" alt="Dashboard" width="100%"/>
-    </td>
-    <td align="center" width="25%">
-      <b>Transactions</b><br><br>
-      <img src="screenshots/transactions.png" alt="Transactions" width="100%"/>
-    </td>
-    <td align="center" width="25%">
-      <b>Categories Analytics</b><br><br>
-      <img src="screenshots/categories.png" alt="Categories Analytics" width="100%"/>
-    </td>
-    <td align="center" width="25%">
-      <b>Add Transaction</b><br><br>
-      <img src="screenshots/add_transaction.png" alt="Add Transaction" width="100%"/>
-    </td>
-  </tr>
-</table>
+<p align="center">
+  <img src="screenshots/dashboard.png" width="220"/>
+  &nbsp;&nbsp;&nbsp;
+  <img src="screenshots/expense.png" width="220"/>
+  &nbsp;&nbsp;&nbsp;
+  <img src="screenshots/categories.png" width="220"/>
+  &nbsp;&nbsp;&nbsp;
+  <img src="screenshots/new_transaction.png" width="220"/>
+</p>
 
-<br> <!-- Spacing Gap between rows -->
+<br>
 
-<table>
-  <!-- Bottom Row: Account & Settings -->
-  <tr>
-    <td align="center" width="50%">
-      <b>Profile & Settings</b><br><br>
-      <img src="screenshots/profile.png" alt="Profile" width="50%"/>
-    </td>
-    <td align="center" width="50%">
-      <b>Authentication</b><br><br>
-      <img src="screenshots/auth.png" alt="Authentication" width="50%"/>
-    </td>
-  </tr>
-</table>
-
+<p align="center">
+  <img src="screenshots/profile.png" width="220"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="screenshots/login.png" width="220"/>
+</p>
 ---
 
 # 🖥️ Backend Repository
