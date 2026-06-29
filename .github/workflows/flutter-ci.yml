@@ -13,5 +13,5 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Print Hello
-        run: echo "Repository downloaded successfully!"
+      - name: Print Repository
+        run: ls -la
