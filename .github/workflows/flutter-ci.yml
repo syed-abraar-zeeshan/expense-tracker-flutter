@@ -6,7 +6,7 @@ on:
       - feature/expense-tracker-ci-cd
 
 jobs:
-  hello:
+  build:
     runs-on: ubuntu-latest
 
     steps:
