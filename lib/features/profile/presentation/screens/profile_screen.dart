@@ -13,7 +13,11 @@ import 'package:go_router/go_router.dart';
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
-  void _showCurrencySelector(BuildContext context, WidgetRef ref, ThemeData theme) {
+  void _showCurrencySelector(
+    BuildContext context,
+    WidgetRef ref,
+    ThemeData theme,
+  ) {
     showModalBottomSheet(
       context: context,
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -46,7 +50,9 @@ class ProfileScreen extends ConsumerWidget {
                   children: [
                     Text(
                       'Select Currency',
-                      style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                     if (currencyState.isSyncing)
                       const SizedBox(
@@ -70,20 +76,46 @@ class ProfileScreen extends ConsumerWidget {
                           width: 48,
                           height: 48,
                           decoration: BoxDecoration(
-                            color: isSelected ? AppColors.primary.withValues(alpha: 0.1) : theme.colorScheme.surface,
+                            color: isSelected
+                                ? AppColors.primary.withValues(alpha: 0.1)
+                                : theme.colorScheme.surface,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: isSelected ? AppColors.primary : theme.dividerColor.withValues(alpha: 0.05),
+                              color: isSelected
+                                  ? AppColors.primary
+                                  : theme.dividerColor.withValues(alpha: 0.05),
                             ),
                           ),
                           alignment: Alignment.center,
-                          child: Text(currency.symbol, style: theme.textTheme.titleLarge?.copyWith(color: isSelected ? AppColors.primary : null)),
+                          child: Text(
+                            currency.symbol,
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              color: isSelected ? AppColors.primary : null,
+                            ),
+                          ),
                         ),
-                        title: Text(currency.name, style: theme.textTheme.bodyLarge?.copyWith(fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400)),
-                        subtitle: Text(currency.code, style: theme.textTheme.bodySmall),
-                        trailing: isSelected ? const Icon(Icons.check_circle_rounded, color: AppColors.primary) : null,
+                        title: Text(
+                          currency.name,
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            fontWeight: isSelected
+                                ? FontWeight.w600
+                                : FontWeight.w400,
+                          ),
+                        ),
+                        subtitle: Text(
+                          currency.code,
+                          style: theme.textTheme.bodySmall,
+                        ),
+                        trailing: isSelected
+                            ? const Icon(
+                                Icons.check_circle_rounded,
+                                color: AppColors.primary,
+                              )
+                            : null,
                         onTap: () {
-                          ref.read(currencyControllerProvider.notifier).setCurrency(currency);
+                          ref
+                              .read(currencyControllerProvider.notifier)
+                              .setCurrency(currency);
                           Navigator.pop(context);
                         },
                       );
@@ -136,12 +168,12 @@ class ProfileScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Gap(AppDimensions.xl),
-                  
+
                   // 2. Statistics Section
                   _buildStatisticsSection(theme, isDark),
-                  
+
                   const Gap(AppDimensions.xl),
-                  
+
                   // 3. Settings Section
                   _buildSectionHeader(theme, 'Account Settings'),
                   const Gap(AppDimensions.md),
@@ -152,42 +184,73 @@ class ProfileScreen extends ConsumerWidget {
                       Icons.dark_mode_rounded,
                       'Dark Mode',
                       trailing: Switch.adaptive(
-                        value: ref.watch(themeControllerProvider) == ThemeMode.dark,
+                        value:
+                            ref.watch(themeControllerProvider) ==
+                            ThemeMode.dark,
                         onChanged: (value) {
-                          ref.read(themeControllerProvider.notifier).toggleTheme(value);
+                          ref
+                              .read(themeControllerProvider.notifier)
+                              .toggleTheme(value);
                         },
-                        activeColor: AppColors.primary,
+                        activeThumbColor: AppColors.primary,
                       ),
                     ),
-                    _buildSettingTile(theme, isDark, Icons.notifications_active_rounded, 'Notifications'),
                     _buildSettingTile(
-                      theme, 
-                      isDark, 
-                      Icons.currency_exchange_rounded, 
-                      'Currency', 
-                      trailing: Text('${currentCurrency.code} (${currentCurrency.symbol})', style: const TextStyle(fontWeight: FontWeight.w600)),
+                      theme,
+                      isDark,
+                      Icons.notifications_active_rounded,
+                      'Notifications',
+                    ),
+                    _buildSettingTile(
+                      theme,
+                      isDark,
+                      Icons.currency_exchange_rounded,
+                      'Currency',
+                      trailing: Text(
+                        '${currentCurrency.code} (${currentCurrency.symbol})',
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
                       onTap: () => _showCurrencySelector(context, ref, theme),
                     ),
-                    _buildSettingTile(theme, isDark, Icons.security_rounded, 'Security'),
+                    _buildSettingTile(
+                      theme,
+                      isDark,
+                      Icons.security_rounded,
+                      'Security',
+                    ),
                   ]),
 
-                  
                   const Gap(AppDimensions.xl),
-                  
+
                   // 4. App Section
                   _buildSectionHeader(theme, 'App Information'),
                   const Gap(AppDimensions.md),
                   _buildSettingsGroup(theme, isDark, [
-                    _buildSettingTile(theme, isDark, Icons.info_outline_rounded, 'About App'),
-                    _buildSettingTile(theme, isDark, Icons.privacy_tip_outlined, 'Privacy Policy'),
-                    _buildSettingTile(theme, isDark, Icons.description_outlined, 'Terms & Conditions'),
+                    _buildSettingTile(
+                      theme,
+                      isDark,
+                      Icons.info_outline_rounded,
+                      'About App',
+                    ),
+                    _buildSettingTile(
+                      theme,
+                      isDark,
+                      Icons.privacy_tip_outlined,
+                      'Privacy Policy',
+                    ),
+                    _buildSettingTile(
+                      theme,
+                      isDark,
+                      Icons.description_outlined,
+                      'Terms & Conditions',
+                    ),
                   ]),
-                  
+
                   const Gap(AppDimensions.xxl),
-                  
+
                   // 5. Logout Section
                   _buildLogoutButton(context, ref, theme),
-                  
+
                   const Gap(AppDimensions.massive),
                 ],
               ),
@@ -240,7 +303,11 @@ class ProfileScreen extends ConsumerWidget {
                       backgroundColor: Colors.white,
                       child: Text(
                         user?.name.substring(0, 1).toUpperCase() ?? 'G',
-                        style: const TextStyle(fontSize: 40, fontWeight: FontWeight.w800, color: AppColors.primary),
+                        style: const TextStyle(
+                          fontSize: 40,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.primary,
+                        ),
                       ),
                     ),
                   ),
@@ -248,11 +315,16 @@ class ProfileScreen extends ConsumerWidget {
                 const Gap(AppDimensions.md),
                 Text(
                   user?.name ?? AppStrings.guestUser,
-                  style: theme.textTheme.headlineSmall?.copyWith(color: Colors.white, fontWeight: FontWeight.w800),
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
                 Text(
                   user?.email ?? 'guest@expenseflow.com',
-                  style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white70),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: Colors.white70,
+                  ),
                 ),
               ],
             ),
@@ -281,9 +353,17 @@ class ProfileScreen extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _buildStatItem(theme, '124', 'Transactions'),
-          Container(width: 1, height: 40, color: theme.dividerColor.withValues(alpha: 0.1)),
+          Container(
+            width: 1,
+            height: 40,
+            color: theme.dividerColor.withValues(alpha: 0.1),
+          ),
           _buildStatItem(theme, '\$12k', 'Income'),
-          Container(width: 1, height: 40, color: theme.dividerColor.withValues(alpha: 0.1)),
+          Container(
+            width: 1,
+            height: 40,
+            color: theme.dividerColor.withValues(alpha: 0.1),
+          ),
           _buildStatItem(theme, '\$8k', 'Expenses'),
         ],
       ),
@@ -295,12 +375,12 @@ class ProfileScreen extends ConsumerWidget {
       children: [
         Text(
           value,
-          style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800, color: AppColors.primary),
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w800,
+            color: AppColors.primary,
+          ),
         ),
-        Text(
-          label,
-          style: theme.textTheme.bodySmall,
-        ),
+        Text(label, style: theme.textTheme.bodySmall),
       ],
     );
   }
@@ -312,7 +392,11 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildSettingsGroup(ThemeData theme, bool isDark, List<Widget> children) {
+  Widget _buildSettingsGroup(
+    ThemeData theme,
+    bool isDark,
+    List<Widget> children,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
@@ -323,7 +407,14 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildSettingTile(ThemeData theme, bool isDark, IconData icon, String title, {Widget? trailing, VoidCallback? onTap}) {
+  Widget _buildSettingTile(
+    ThemeData theme,
+    bool isDark,
+    IconData icon,
+    String title, {
+    Widget? trailing,
+    VoidCallback? onTap,
+  }) {
     return ListTile(
       leading: Container(
         padding: const EdgeInsets.all(8),
@@ -333,13 +424,20 @@ class ProfileScreen extends ConsumerWidget {
         ),
         child: Icon(icon, color: AppColors.primary, size: 20),
       ),
-      title: Text(title, style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600)),
+      title: Text(
+        title,
+        style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+      ),
       trailing: trailing ?? const Icon(Icons.chevron_right_rounded, size: 20),
       onTap: onTap ?? (trailing == null ? () {} : null),
     );
   }
 
-  Widget _buildLogoutButton(BuildContext context, WidgetRef ref, ThemeData theme) {
+  Widget _buildLogoutButton(
+    BuildContext context,
+    WidgetRef ref,
+    ThemeData theme,
+  ) {
     return AppButton(
       text: 'Logout',
       onPressed: () => _showLogoutDialog(context, ref),
@@ -369,7 +467,13 @@ class ProfileScreen extends ConsumerWidget {
                 context.go('/');
               }
             },
-            child: const Text('Logout', style: TextStyle(color: AppColors.error, fontWeight: FontWeight.bold)),
+            child: const Text(
+              'Logout',
+              style: TextStyle(
+                color: AppColors.error,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ],
       ),
@@ -400,7 +504,7 @@ class AppButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Container(
       width: double.infinity,
       height: 56,
@@ -409,7 +513,8 @@ class AppButton extends StatelessWidget {
         gradient: (useGradient && onPressed != null)
             ? const LinearGradient(colors: AppColors.primaryGradient)
             : null,
-        color: backgroundColor ?? (onPressed == null ? theme.disabledColor : null),
+        color:
+            backgroundColor ?? (onPressed == null ? theme.disabledColor : null),
         boxShadow: [
           if (useGradient && onPressed != null)
             BoxShadow(
@@ -425,15 +530,30 @@ class AppButton extends StatelessWidget {
           backgroundColor: Colors.transparent,
           foregroundColor: foregroundColor ?? Colors.white,
           shadowColor: Colors.transparent,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
         ),
         child: isLoading
-            ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+            ? const SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.white,
+                ),
+              )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   if (icon != null) ...[icon!, const Gap(8)],
-                  Text(text, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  Text(
+                    text,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ],
               ),
       ),
