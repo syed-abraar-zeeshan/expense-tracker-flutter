@@ -20,3 +20,6 @@ jobs:
 
       - name: Verify Flutter Installation
         run: flutter --version
+
+      - name: Install Dependencies
+        run: flutter pub get
