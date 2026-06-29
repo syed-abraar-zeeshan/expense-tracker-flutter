@@ -18,6 +18,14 @@ jobs:
         with:
           flutter-version: "3.41.7"
 
+      - name: Restore Pub Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-
+
       - name: Verify Flutter Installation
         run: flutter --version
 
