@@ -1,6 +1,7 @@
 import 'package:expense_flow/core/storage/secure_storage_provider.dart';
 import 'package:expense_flow/features/auth/presentation/controllers/auth_state.dart';
 import 'package:expense_flow/features/auth/presentation/providers/auth_providers.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_controller.g.dart';
@@ -21,9 +22,33 @@ class AuthController extends _$AuthController {
       if (user.token != null) {
         await ref.read(secureStorageProvider).saveToken(user.token!);
       }
+
+      final fcmToken = await FirebaseMessaging.instance.getToken();
+
+      if (fcmToken != null) {
+        await registerFCMToken(fcmToken: fcmToken);
+      }
       state = state.copyWith(isLoading: false, isAuthenticated: true);
     } catch (e) {
       state = state.copyWith(isLoading: false, errorMessage: e.toString());
+    }
+  }
+
+  Future<void> registerFCMToken({required String fcmToken}) async {
+    try {
+      final repository = ref.read(authRepositoryProvider);
+      await repository.registerFCMToken(fcmToken: fcmToken);
+    } catch (e) {
+      state = state.copyWith(errorMessage: e.toString());
+    }
+  }
+
+  Future<void> sendNotification({required String title, required String body}) async {
+    try {
+      final repository = ref.read(authRepositoryProvider);
+      await repository.sendNotification(title: title, body: body);
+    } catch (e) {
+      state = state.copyWith(errorMessage: e.toString());
     }
   }
 
@@ -43,7 +68,11 @@ class AuthController extends _$AuthController {
   }
 
   Future<void> forgotPassword({required String email}) async {
-    state = state.copyWith(isLoading: true, errorMessage: null, isPasswordResetSent: false);
+    state = state.copyWith(
+      isLoading: true,
+      errorMessage: null,
+      isPasswordResetSent: false,
+    );
     try {
       final repository = ref.read(authRepositoryProvider);
       await repository.forgotPassword(email: email);

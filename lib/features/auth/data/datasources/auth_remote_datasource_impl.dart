@@ -44,10 +44,7 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
 
   @override
   Future<void> forgotPassword({required String email}) async {
-    await apiService.post(
-      ApiConstants.forgotPassword,
-      data: {'email': email},
-    );
+    await apiService.post(ApiConstants.forgotPassword, data: {'email': email});
   }
 
   @override
@@ -58,11 +55,27 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
   }) async {
     await apiService.post(
       ApiConstants.resetPassword,
-      data: {
-        'email': email,
-        'password': password,
-        'token': token,
-      },
+      data: {'email': email, 'password': password, 'token': token},
+    );
+  }
+
+  @override
+  Future<void> registerFCMToken({required String fcmToken}) async {
+    await apiService.post(
+      ApiConstants.registerFCMToken,
+      data: {'fcmToken': fcmToken},
+    );
+  }
+
+  @override //implementing the method that exists in AuthRemoteDatasource
+  Future<void> sendNotification({
+    required String title,
+    required String body,
+  }) async {
+    //implementation of the interface method.
+    await apiService.post(
+      ApiConstants.sendNotification,
+      data: {'title': title, 'body': body},
     );
   }
 }

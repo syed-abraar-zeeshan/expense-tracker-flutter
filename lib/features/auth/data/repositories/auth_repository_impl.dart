@@ -49,5 +49,18 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<void> registerFCMToken({required String fcmToken}) async {
+    return remoteDatasource.registerFCMToken(fcmToken: fcmToken);
+  }
+
+  @override
+  Future<void> sendNotification({
+    required String title,
+    required String body,
+  }) async {
+    return remoteDatasource.sendNotification(title: title, body: body);
+  }
+
+  @override
   Future<void> logout() async {}
 }
