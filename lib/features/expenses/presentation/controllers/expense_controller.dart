@@ -1,3 +1,4 @@
+import 'package:expense_flow/features/dashboard/domain/enities/transaction_entity.dart';
 import 'package:expense_flow/features/dashboard/presentation/controllers/dashboard_controller.dart';
 import 'package:expense_flow/features/expenses/data/models/expense_request_model.dart';
 import 'package:expense_flow/features/expenses/presentation/controllers/expense_state.dart';
@@ -23,7 +24,7 @@ class ExpenseController extends _$ExpenseController {
 
     try {
       await ref.read(expenseRepositoryProvider).createExpense(request: request);
-      
+
       // Refresh dashboard and transactions list immediately
       await ref.read(dashboardControllerProvider.notifier).getDashboard();
       await ref.read(transactionsControllerProvider.notifier).refresh();
@@ -91,8 +92,13 @@ class ExpenseController extends _$ExpenseController {
     }
   }
 
+  Future<TransactionEntity> getExpenseById(String id) async {
+    final repository = ref.read(expenseRepositoryProvider);
+
+    return await repository.getExpenseById(id);
+  }
+
   void clearError() {
     state = state.copyWith(errorMessage: null);
   }
 }
-

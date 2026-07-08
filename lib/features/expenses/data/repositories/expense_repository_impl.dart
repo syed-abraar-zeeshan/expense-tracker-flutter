@@ -30,4 +30,9 @@ class ExpenseRepositoryImpl implements ExpenseRepository {
   Future<void> deleteExpense({required String id}) {
     return remoteDatasource.deleteExpense(id: id);
   }
+
+  @override
+  Future<TransactionEntity> getExpenseById(String id) {
+    return remoteDatasource.getExpenseById(id);
+  }
 }

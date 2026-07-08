@@ -34,7 +34,7 @@ class LocalNotificationService {
     );
 
     await flutterLocalNotificationsPlugin.show(
-      id: 0,
+      id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
       title: title,
       body: body,
       notificationDetails: notificationDetails,

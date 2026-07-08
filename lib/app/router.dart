@@ -14,16 +14,13 @@ import 'package:expense_flow/features/profile/presentation/screens/profile_scree
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
 final appRouter = GoRouter(
   initialLocation: '/splash',
-  navigatorKey: _rootNavigatorKey,
+  navigatorKey: rootNavigatorKey,
   routes: [
-    GoRoute(
-      path: '/splash',
-      builder: (context, state) => const SplashScreen(),
-    ),
+    GoRoute(path: '/splash', builder: (context, state) => const SplashScreen()),
     GoRoute(path: '/', builder: (context, state) => const LoginScreen()),
     GoRoute(path: '/register', builder: (context, state) => RegisterScreen()),
     GoRoute(
@@ -38,7 +35,7 @@ final appRouter = GoRouter(
         return ResetPasswordScreen(email: email, token: token);
       },
     ),
-    
+
     // Persistent Navigation Shell
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
@@ -87,12 +84,12 @@ final appRouter = GoRouter(
     // Other Global Routes
     GoRoute(
       path: '/add-expense',
-      parentNavigatorKey: _rootNavigatorKey,
+      parentNavigatorKey: rootNavigatorKey,
       builder: (context, state) => const AddExpenseScreen(),
     ),
     GoRoute(
       path: '/edit-expense',
-      parentNavigatorKey: _rootNavigatorKey,
+      parentNavigatorKey: rootNavigatorKey,
       builder: (context, state) {
         final transaction = state.extra as TransactionEntity;
         return EditExpenseScreen(transaction: transaction);

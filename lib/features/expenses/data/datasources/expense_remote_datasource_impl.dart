@@ -1,6 +1,7 @@
 import 'package:expense_flow/core/constants/api_constants.dart';
 import 'package:expense_flow/core/network/base_api_service.dart';
 import 'package:expense_flow/features/dashboard/data/models/transaction_model.dart';
+import 'package:expense_flow/features/dashboard/domain/enities/transaction_entity.dart';
 import 'package:expense_flow/features/expenses/data/datasources/expense_remote_datasource.dart';
 import 'package:expense_flow/features/expenses/data/models/expense_request_model.dart';
 
@@ -36,5 +37,11 @@ class ExpenseRemoteDataSourceImpl implements ExpenseRemoteDataSource {
   @override
   Future<void> deleteExpense({required String id}) async {
     await apiService.delete('${ApiConstants.expenses}/$id');
+  }
+
+  @override
+  Future<TransactionEntity> getExpenseById(String id) async {
+    final response = await apiService.get('${ApiConstants.expenses}/$id');
+    return TransactionModel.fromJson(response.data["data"]);
   }
 }

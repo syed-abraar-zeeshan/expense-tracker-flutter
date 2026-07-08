@@ -1,4 +1,5 @@
 import 'package:expense_flow/features/dashboard/data/models/transaction_model.dart';
+import 'package:expense_flow/features/dashboard/domain/enities/transaction_entity.dart';
 import 'package:expense_flow/features/expenses/data/models/expense_request_model.dart';
 
 abstract class ExpenseRemoteDataSource {
@@ -9,4 +10,5 @@ abstract class ExpenseRemoteDataSource {
     required ExpenseRequestModel request,
   });
   Future<void> deleteExpense({required String id});
+  Future<TransactionEntity> getExpenseById(String id);
 }

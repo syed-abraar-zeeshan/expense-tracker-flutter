@@ -1,4 +1,5 @@
 import 'package:expense_flow/core/services/local_notification_service.dart';
+import 'package:expense_flow/core/services/notification_navigation_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 @pragma('vm:entry-point')
@@ -33,15 +34,25 @@ class NotificationService {
       print('Notification tapped!');
       print('Title: ${message.notification?.title}');
       print('Body: ${message.notification?.body}');
+      _handleNotification(message);
     });
 
+    final RemoteMessage? initialMessage = await FirebaseMessaging.instance
+        .getInitialMessage();
 
-    final RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
-
-    if(initialMessage != null) {
+    if (initialMessage != null) {
       print('App opened from terminated state!');
       print('Title: ${initialMessage.notification?.title}');
       print('Body: ${initialMessage.notification?.body}');
+      _handleNotification(initialMessage);
+    }
+  }
+
+  Future<void> _handleNotification(RemoteMessage message) async {
+    final expenseId = message.data["expenseId"];
+
+    if (expenseId != null) {
+      await NotificationNavigationService().openExpense(expenseId);
     }
   }
 }

@@ -9,4 +9,5 @@ abstract class ExpenseRepository {
     required ExpenseRequestModel request,
   });
   Future<void> deleteExpense({required String id});
+  Future<TransactionEntity> getExpenseById(String id);
 }
