@@ -100,7 +100,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             body: "₹500 added successfully!",
                           );
 
-                      if (!mounted) return;
+                      if (!context.mounted) return;
 
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(

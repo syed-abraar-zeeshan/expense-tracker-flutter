@@ -1,12 +1,13 @@
 import 'package:expense_flow/core/services/local_notification_service.dart';
 import 'package:expense_flow/core/services/notification_navigation_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'dart:developer' as developer;
 
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print('Background message received');
-  print('Title: ${message.notification?.title}');
-  print('Body: ${message.notification?.body}');
+  developer.log('Background message received');
+  developer.log('Title: ${message.notification?.title}');
+  developer.log('Body: ${message.notification?.body}');
 }
 
 class NotificationService {
@@ -14,10 +15,10 @@ class NotificationService {
 
   Future<void> initialize() async {
     NotificationSettings settings = await _messaging.requestPermission();
-    print('Permission granted: ${settings.authorizationStatus}');
+    developer.log('Permission granted: ${settings.authorizationStatus}');
 
     final token = await _messaging.getToken();
-    print('FCM Token: $token');
+    developer.log('FCM Token: $token');
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       final notification = message.notification;
@@ -31,9 +32,9 @@ class NotificationService {
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
-      print('Notification tapped!');
-      print('Title: ${message.notification?.title}');
-      print('Body: ${message.notification?.body}');
+      developer.log('Notification tapped!');
+      developer.log('Title: ${message.notification?.title}');
+      developer.log('Body: ${message.notification?.body}');
       _handleNotification(message);
     });
 
@@ -41,9 +42,9 @@ class NotificationService {
         .getInitialMessage();
 
     if (initialMessage != null) {
-      print('App opened from terminated state!');
-      print('Title: ${initialMessage.notification?.title}');
-      print('Body: ${initialMessage.notification?.body}');
+      developer.log('App opened from terminated state!');
+      developer.log('Title: ${initialMessage.notification?.title}');
+      developer.log('Body: ${initialMessage.notification?.body}');
       _handleNotification(initialMessage);
     }
   }
