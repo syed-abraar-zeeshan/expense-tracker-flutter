@@ -1,12 +1,20 @@
+import 'package:expense_flow/core/network/connectivity_service.dart';
 import 'package:expense_flow/features/dashboard/domain/enities/transaction_entity.dart';
+import 'package:expense_flow/features/expenses/data/datasources/expense_local_datasource.dart';
 import 'package:expense_flow/features/expenses/data/datasources/expense_remote_datasource.dart';
 import 'package:expense_flow/features/expenses/data/models/expense_request_model.dart';
 import 'package:expense_flow/features/expenses/domain/repositories/expense_repository.dart';
 
 class ExpenseRepositoryImpl implements ExpenseRepository {
   final ExpenseRemoteDataSource remoteDatasource;
+  final ExpenseLocalDataSource localDatasource;
+  final ConnectivityService connectivityService;
 
-  ExpenseRepositoryImpl({required this.remoteDatasource});
+  ExpenseRepositoryImpl({
+    required this.remoteDatasource,
+    required this.localDatasource,
+    required this.connectivityService,
+  });
 
   @override
   Future<List<TransactionEntity>> getTransactions() {
