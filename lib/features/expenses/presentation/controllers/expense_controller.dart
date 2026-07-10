@@ -1,3 +1,4 @@
+import 'package:expense_flow/features/categories/domain/entities/category_entity.dart';
 import 'package:expense_flow/features/dashboard/domain/enities/transaction_entity.dart';
 import 'package:expense_flow/features/dashboard/presentation/controllers/dashboard_controller.dart';
 import 'package:expense_flow/features/expenses/data/models/expense_request_model.dart';
@@ -15,7 +16,10 @@ class ExpenseController extends _$ExpenseController {
     return const ExpenseState();
   }
 
-  Future<void> createExpense({required ExpenseRequestModel request}) async {
+  Future<void> createExpense({
+    required ExpenseRequestModel request,
+    required CategoryEntity category,
+  }) async {
     state = state.copyWith(
       isLoading: true,
       errorMessage: null,
@@ -23,7 +27,9 @@ class ExpenseController extends _$ExpenseController {
     );
 
     try {
-      await ref.read(expenseRepositoryProvider).createExpense(request: request);
+      await ref
+          .read(expenseRepositoryProvider)
+          .createExpense(request: request, category: category);
 
       // Refresh dashboard and transactions list immediately
       await ref.read(dashboardControllerProvider.notifier).getDashboard();

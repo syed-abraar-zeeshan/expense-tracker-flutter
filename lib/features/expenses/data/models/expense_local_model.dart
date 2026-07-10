@@ -11,7 +11,6 @@ class ExpenseLocalModel {
   final String categoryColor;
 
   final String? note;
-
   final bool isSynced;
 
   const ExpenseLocalModel({
@@ -27,4 +26,32 @@ class ExpenseLocalModel {
     this.note,
     this.isSynced = false,
   });
+
+  ExpenseLocalModel copyWith({
+    String? id,
+    String? title,
+    double? amount,
+    String? type,
+    DateTime? date,
+    String? categoryId,
+    String? categoryName,
+    String? categoryIcon,
+    String? categoryColor,
+    String? note,
+    bool? isSynced,
+  }) {
+    return ExpenseLocalModel(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      amount: amount ?? this.amount,
+      type: type ?? this.type,
+      date: date ?? this.date,
+      categoryId: categoryId ?? this.categoryId,
+      categoryName: categoryName ?? this.categoryName,
+      categoryIcon: categoryIcon ?? this.categoryIcon,
+      categoryColor: categoryColor ?? this.categoryColor,
+      note: note ?? this.note,
+      isSynced: isSynced ?? this.isSynced,
+    );
+  }
 }

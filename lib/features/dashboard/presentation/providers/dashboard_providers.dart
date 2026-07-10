@@ -3,6 +3,7 @@ import 'package:expense_flow/features/dashboard/data/datasources/dashboard_remot
 import 'package:expense_flow/features/dashboard/data/datasources/dashboard_remote_datasource_impl.dart';
 import 'package:expense_flow/features/dashboard/data/repositories/dashboard_repository_impl.dart';
 import 'package:expense_flow/features/dashboard/domain/repositories/dashboard_repository.dart';
+import 'package:expense_flow/features/expenses/presentation/providers/expense_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final dashboardRemoteDatasourceProvider = Provider<DashboardRemoteDatasource>((
@@ -16,5 +17,7 @@ final dashboardRemoteDatasourceProvider = Provider<DashboardRemoteDatasource>((
 final dashboardRepositoryProvider = Provider<DashboardRepository>((ref) {
   return DashboardRepositoryImpl(
     dashboardRemoteDatasource: ref.watch(dashboardRemoteDatasourceProvider),
+    expenseLocalDataSource: ref.watch(expenseLocalDatasourceProvider),
+    connectivityService: ref.watch(connectivityServiceProvider),
   );
 });

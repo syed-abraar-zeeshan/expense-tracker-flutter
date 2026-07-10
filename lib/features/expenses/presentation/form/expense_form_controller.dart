@@ -1,3 +1,4 @@
+import 'package:expense_flow/features/categories/domain/entities/category_entity.dart';
 import 'package:flutter/material.dart';
 
 class ExpenseFormController {
@@ -15,7 +16,8 @@ class ExpenseFormController {
   final noteController = TextEditingController();
   final dateController = TextEditingController();
 
-  String? selectedCategoryId;
+  // String? selectedCategoryId;
+  CategoryEntity? selectedCategory;
   String selectedType = 'expense';
 
   late DateTime selectedDate;

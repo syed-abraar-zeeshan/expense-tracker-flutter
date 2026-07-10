@@ -1,5 +1,6 @@
 import 'package:expense_flow/app/router.dart';
 import 'package:expense_flow/core/constants/app_strings.dart';
+import 'package:expense_flow/core/sync/sync_manager_provider.dart';
 import 'package:expense_flow/core/theme/app_theme.dart';
 import 'package:expense_flow/features/settings/presentation/controllers/theme_controller.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ class ExpenseFlowApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeControllerProvider);
+    ref.watch(syncManagerProvider);
 
     return MaterialApp.router(
       title: AppStrings.appName,

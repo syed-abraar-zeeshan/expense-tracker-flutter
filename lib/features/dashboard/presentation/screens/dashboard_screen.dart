@@ -88,31 +88,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
                 const Gap(AppDimensions.lg),
 
-                // Temporary Test Button for Push Notification
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: () async {
-                      await ref
-                          .read(authControllerProvider.notifier)
-                          .sendNotification(
-                            title: "Expense Added",
-                            body: "₹500 added successfully!",
-                          );
-
-                      if (!context.mounted) return;
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Notification request sent'),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.notifications_active),
-                    label: const Text('Send Test Notification'),
-                  ),
-                ),
-
                 const Gap(AppDimensions.xl),
 
                 // 5. Recent Transactions Header

@@ -50,7 +50,7 @@ class _EditExpenseScreenState extends ConsumerState<EditExpenseScreen> {
     formController.amountController.text = widget.transaction.amount
         .abs()
         .toString();
-    formController.selectedCategoryId = widget.transaction.category.id;
+    formController.selectedCategory = widget.transaction.category;
     formController.selectedType =
         widget.transaction.type.toLowerCase() == 'income'
         ? 'income'
@@ -148,9 +148,9 @@ class _EditExpenseScreenState extends ConsumerState<EditExpenseScreen> {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              ref.read(expenseControllerProvider.notifier).deleteExpense(
-                    id: widget.transaction.id,
-                  );
+              ref
+                  .read(expenseControllerProvider.notifier)
+                  .deleteExpense(id: widget.transaction.id);
             },
             child: const Text(
               'Delete',
@@ -169,7 +169,9 @@ class _EditExpenseScreenState extends ConsumerState<EditExpenseScreen> {
   Widget build(BuildContext context) {
     final categoriesState = ref.watch(categoriesControllerProvider);
     final expenseState = ref.watch(expenseControllerProvider);
-    final currentCurrency = ref.watch(currencyControllerProvider).selectedCurrency;
+    final currentCurrency = ref
+        .watch(currencyControllerProvider)
+        .selectedCurrency;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
@@ -267,7 +269,7 @@ class _EditExpenseScreenState extends ConsumerState<EditExpenseScreen> {
                     onPressed: () async {
                       if (formController.amountController.text.isEmpty ||
                           formController.titleController.text.isEmpty ||
-                          formController.selectedCategoryId == null) {
+                          formController.selectedCategory == null) {
                         AppSnackbar.show(
                           context,
                           message: 'Please fill in all required fields',
@@ -281,7 +283,7 @@ class _EditExpenseScreenState extends ConsumerState<EditExpenseScreen> {
                         amount: double.parse(
                           formController.amountController.text,
                         ),
-                        category: formController.selectedCategoryId!,
+                        category: formController.selectedCategory!.id,
                         note: formController.noteController.text,
                         type: formController.selectedType,
                         date: formController.selectedDate,
@@ -508,10 +510,10 @@ class _EditExpenseScreenState extends ConsumerState<EditExpenseScreen> {
             child: Row(
               children: categories.map<Widget>((category) {
                 final isSelected =
-                    formController.selectedCategoryId == category.id;
+                    formController.selectedCategory?.id == category.id;
                 return GestureDetector(
                   onTap: () => setState(
-                    () => formController.selectedCategoryId = category.id,
+                    () => formController.selectedCategory = category,
                   ),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),

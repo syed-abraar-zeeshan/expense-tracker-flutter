@@ -63,7 +63,9 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
             height: 300,
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.surface,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(24),
+              ),
             ),
             child: Column(
               children: [
@@ -73,8 +75,8 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
                     child: const Text('Done'),
                     onPressed: () {
                       formController.selectedDate = selectedDate;
-                      formController.dateController.text =
-                          DateFormat.yMMMd().format(selectedDate);
+                      formController.dateController.text = DateFormat.yMMMd()
+                          .format(selectedDate);
                       Navigator.pop(context);
                       setState(() {});
                     },
@@ -104,8 +106,9 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
 
       if (pickedDate != null) {
         formController.selectedDate = pickedDate;
-        formController.dateController.text =
-            DateFormat.yMMMd().format(pickedDate);
+        formController.dateController.text = DateFormat.yMMMd().format(
+          pickedDate,
+        );
         setState(() {});
       }
     }
@@ -115,7 +118,9 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
   Widget build(BuildContext context) {
     final categoriesState = ref.watch(categoriesControllerProvider);
     final expenseState = ref.watch(expenseControllerProvider);
-    final currentCurrency = ref.watch(currencyControllerProvider).selectedCurrency;
+    final currentCurrency = ref
+        .watch(currencyControllerProvider)
+        .selectedCurrency;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
@@ -153,7 +158,9 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
             ),
             title: Text(
               'New Transaction',
-              style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
             ),
             centerTitle: true,
           ),
@@ -202,7 +209,7 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
                     onPressed: () async {
                       if (formController.amountController.text.isEmpty ||
                           formController.titleController.text.isEmpty ||
-                          formController.selectedCategoryId == null) {
+                          formController.selectedCategory == null) {
                         AppSnackbar.show(
                           context,
                           message: 'Please fill in all required fields',
@@ -213,8 +220,12 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
 
                       final request = ExpenseRequestModel(
                         title: formController.titleController.text.trim(),
-                        amount: double.tryParse(formController.amountController.text.trim()) ?? 0.0,
-                        category: formController.selectedCategoryId!,
+                        amount:
+                            double.tryParse(
+                              formController.amountController.text.trim(),
+                            ) ??
+                            0.0,
+                        category: formController.selectedCategory!.id,
                         note: formController.noteController.text.trim(),
                         type: formController.selectedType,
                         date: formController.selectedDate,
@@ -222,7 +233,10 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
 
                       await ref
                           .read(expenseControllerProvider.notifier)
-                          .createExpense(request: request);
+                          .createExpense(
+                            request: request,
+                            category: formController.selectedCategory!,
+                          );
                     },
                   ).animate().fadeIn().scale(delay: 500.ms),
 
@@ -250,7 +264,8 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
         children: [
           Expanded(
             child: GestureDetector(
-              onTap: () => setState(() => formController.selectedType = 'expense'),
+              onTap: () =>
+                  setState(() => formController.selectedType = 'expense'),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
                 padding: const EdgeInsets.symmetric(vertical: 12),
@@ -262,7 +277,9 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
                 child: Text(
                   'Expense',
                   style: theme.textTheme.titleSmall?.copyWith(
-                    color: isExpense ? Colors.white : theme.textTheme.bodyMedium?.color,
+                    color: isExpense
+                        ? Colors.white
+                        : theme.textTheme.bodyMedium?.color,
                     fontWeight: isExpense ? FontWeight.w700 : FontWeight.w500,
                   ),
                 ),
@@ -271,7 +288,8 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
           ),
           Expanded(
             child: GestureDetector(
-              onTap: () => setState(() => formController.selectedType = 'income'),
+              onTap: () =>
+                  setState(() => formController.selectedType = 'income'),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
                 padding: const EdgeInsets.symmetric(vertical: 12),
@@ -283,7 +301,9 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
                 child: Text(
                   'Income',
                   style: theme.textTheme.titleSmall?.copyWith(
-                    color: !isExpense ? Colors.white : theme.textTheme.bodyMedium?.color,
+                    color: !isExpense
+                        ? Colors.white
+                        : theme.textTheme.bodyMedium?.color,
                     fontWeight: !isExpense ? FontWeight.w700 : FontWeight.w500,
                   ),
                 ),
@@ -303,10 +323,14 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
       duration: const Duration(milliseconds: 300),
       padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
       decoration: BoxDecoration(
-        color: _isAmountFocused ? primaryColor.withValues(alpha: 0.05) : theme.colorScheme.surface,
+        color: _isAmountFocused
+            ? primaryColor.withValues(alpha: 0.05)
+            : theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(32),
         border: Border.all(
-          color: _isAmountFocused ? primaryColor : theme.dividerColor.withValues(alpha: 0.05),
+          color: _isAmountFocused
+              ? primaryColor
+              : theme.dividerColor.withValues(alpha: 0.05),
           width: _isAmountFocused ? 2 : 1,
         ),
         boxShadow: _isAmountFocused
@@ -315,14 +339,14 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
                   color: primaryColor.withValues(alpha: 0.2),
                   blurRadius: 20,
                   offset: const Offset(0, 8),
-                )
+                ),
               ]
             : [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.02),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
-                )
+                ),
               ],
       ),
       child: Column(
@@ -330,7 +354,9 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
           Text(
             'Amount',
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: _isAmountFocused ? primaryColor : theme.textTheme.bodySmall?.color,
+              color: _isAmountFocused
+                  ? primaryColor
+                  : theme.textTheme.bodySmall?.color,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -351,7 +377,9 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
                 child: TextField(
                   controller: formController.amountController,
                   focusNode: _amountFocusNode,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
                   style: theme.textTheme.displayLarge?.copyWith(
                     color: theme.textTheme.bodyLarge?.color,
                     fontWeight: FontWeight.w800,
@@ -396,7 +424,10 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
               borderRadius: BorderRadius.circular(16),
               borderSide: BorderSide.none,
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 16,
+            ),
           ),
         ),
       ],
@@ -420,18 +451,28 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: categories.map<Widget>((category) {
-                final isSelected = formController.selectedCategoryId == category.id;
+                final isSelected =
+                    formController.selectedCategory?.id == category.id;
                 return GestureDetector(
-                  onTap: () => setState(() => formController.selectedCategoryId = category.id),
+                  onTap: () => setState(
+                    () => formController.selectedCategory = category,
+                  ),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
                     margin: const EdgeInsets.only(right: 12),
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
                     decoration: BoxDecoration(
-                      color: isSelected ? AppColors.primary : theme.colorScheme.surface,
+                      color: isSelected
+                          ? AppColors.primary
+                          : theme.colorScheme.surface,
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                        color: isSelected ? AppColors.primary : theme.dividerColor.withValues(alpha: 0.05),
+                        color: isSelected
+                            ? AppColors.primary
+                            : theme.dividerColor.withValues(alpha: 0.05),
                       ),
                       boxShadow: isSelected
                           ? [
@@ -439,20 +480,27 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
                                 color: AppColors.primary.withValues(alpha: 0.3),
                                 blurRadius: 10,
                                 offset: const Offset(0, 4),
-                              )
+                              ),
                             ]
                           : [],
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(category.icon, style: const TextStyle(fontSize: 18)),
+                        Text(
+                          category.icon,
+                          style: const TextStyle(fontSize: 18),
+                        ),
                         const Gap(8),
                         Text(
                           category.name,
                           style: theme.textTheme.bodyMedium?.copyWith(
-                            color: isSelected ? Colors.white : theme.textTheme.bodyLarge?.color,
-                            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                            color: isSelected
+                                ? Colors.white
+                                : theme.textTheme.bodyLarge?.color,
+                            fontWeight: isSelected
+                                ? FontWeight.w600
+                                : FontWeight.w500,
                           ),
                         ),
                       ],
@@ -479,17 +527,25 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
             decoration: BoxDecoration(
               color: theme.colorScheme.surface,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: theme.dividerColor.withValues(alpha: 0.05)),
+              border: Border.all(
+                color: theme.dividerColor.withValues(alpha: 0.05),
+              ),
             ),
             child: Row(
               children: [
-                Icon(Icons.calendar_today_rounded, color: AppColors.primary, size: 22),
+                Icon(
+                  Icons.calendar_today_rounded,
+                  color: AppColors.primary,
+                  size: 22,
+                ),
                 const Gap(12),
                 Text(
                   formController.dateController.text.isEmpty
                       ? DateFormat.yMMMd().format(DateTime.now())
                       : formController.dateController.text,
-                  style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w500),
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
                 const Spacer(),
                 Icon(Icons.chevron_right_rounded, color: theme.disabledColor),
